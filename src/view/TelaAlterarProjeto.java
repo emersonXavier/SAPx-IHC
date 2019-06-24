@@ -326,6 +326,9 @@ public class TelaAlterarProjeto {
 					+ "qtdProgSr=" + Integer.parseInt(txtQtdProgSr.getText()) + ", qtdProgPl=" + Integer.parseInt(txtQtdProgPl.getText()) + ", " 
 					+ "qtdProgJr=" + Integer.parseInt(txtQtdProgJr.getText()) + ", qtdDba="+ Integer.parseInt(txtQtdDba.getText()) 
 					+ "WHERE id_proj=" + Integer.parseInt(txtNumProj.getText()));
+
+			JOptionPane.showMessageDialog(null, "Projeto editado com sucesso!");
+			
 			TelaPesquisarProjeto tela = new TelaPesquisarProjeto();
 			tela.main(null);
 			frmAlterProj.dispose();

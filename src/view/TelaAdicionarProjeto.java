@@ -180,6 +180,9 @@ public class TelaAdicionarProjeto {
 											+ Integer.parseInt(txtQtdProgPl.getText()) + ", "
 											+ Integer.parseInt(txtQtdProgJr.getText()) + ", "
 											+ Integer.parseInt(txtQtdDba.getText()) + ")");
+
+							JOptionPane.showMessageDialog(null, "Projeto adicionado com sucesso!");
+							
 							frmAddProj.dispose();
 							// telaOperacional.getMainFrame().setVisible(true);
 							// telaOperacional.frame.setVisible(true);
