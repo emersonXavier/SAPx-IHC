@@ -208,27 +208,8 @@ public class TelaPesquisarProjeto {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(10, 129, 959, 296);
 		frmPesquisa.getContentPane().add(scrollPane);
-		
-		JButton btnExcluir = new JButton("Excluir Projeto");
-		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnExcluir.setBounds(689, 52, 135, 23);
-		btnExcluir.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				if (JOptionPane.showConfirmDialog(btnExcluir, "Deseja excluir o projeto?", "Excluir Projeto", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-					apagaLinha((table.getValueAt(table.getSelectedRow(), 0)).toString());
 
-					JOptionPane.showMessageDialog(null, "Projeto excluído!");
-				}
-				else {
-					
-				}
-				
-			}
-		});
-		btnExcluir.setEnabled(false);
-		frmPesquisa.getContentPane().add(btnExcluir);
-		
+			
 		JLabel lblPesquisarProjeto = new JLabel("Pesquisar Projeto");
 		lblPesquisarProjeto.setBounds(370, 0, 264, 42);
 		lblPesquisarProjeto.setHorizontalAlignment(SwingConstants.CENTER);
@@ -255,11 +236,31 @@ public class TelaPesquisarProjeto {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-						
 			}
 		});
-		btnAlterar.setEnabled(false);
 		frmPesquisa.getContentPane().add(btnAlterar);
+		btnAlterar.setEnabled(false);
+		
+		JButton btnExcluir = new JButton("Excluir Projeto");
+		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		btnExcluir.setBounds(689, 52, 135, 23);
+		btnExcluir.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if (JOptionPane.showConfirmDialog(btnExcluir, "Deseja excluir o projeto?", "Excluir Projeto", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					apagaLinha((table.getValueAt(table.getSelectedRow(), 0)).toString());
+
+					JOptionPane.showMessageDialog(null, "Projeto excluído!");
+				}
+				else {
+					
+				}
+				btnExcluir.setEnabled(false);
+				btnAlterar.setEnabled(false);
+			}			
+		});
+		frmPesquisa.getContentPane().add(btnExcluir);
+		btnExcluir.setEnabled(false);
 		
 		table = new JTable() {
 			
@@ -325,6 +326,8 @@ public class TelaPesquisarProjeto {
 			public void actionPerformed(ActionEvent e) {
 				apagaTabela();
 				mostraProjeto();
+				btnExcluir.setEnabled(false);
+				btnAlterar.setEnabled(false);
 			}
 		});
 		btnResetTable.setBounds(880, 16, 89, 23);
