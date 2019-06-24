@@ -437,6 +437,7 @@ public class TelaPesquisarProjeto {
 		}
 	}
 	
+	/* PRESTAR ATENÇÃO AQUI, VOU MUDAR PARAMETROS NO BD HARDCODED */
 	public ArrayList<Projeto> pesquisaProjeto(String arg1, String arg2, String dadoPesquisa, String dadoPesquisa2) {
 		
 		proj = null;
