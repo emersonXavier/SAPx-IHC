@@ -217,6 +217,8 @@ public class TelaPesquisarProjeto {
 				
 				if (JOptionPane.showConfirmDialog(btnExcluir, "Deseja excluir o projeto?", "Excluir Projeto", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					apagaLinha((table.getValueAt(table.getSelectedRow(), 0)).toString());
+
+					JOptionPane.showMessageDialog(null, "Projeto excluído!");
 				}
 				else {
 					
