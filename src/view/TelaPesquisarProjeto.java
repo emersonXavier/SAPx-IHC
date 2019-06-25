@@ -399,10 +399,10 @@ public class TelaPesquisarProjeto {
 			linha[0]=projetoArrayList.get(i).getNumProj();
 			linha[1]=projetoArrayList.get(i).getNomeCliente();
 			linha[2]=projetoArrayList.get(i).getCnpjCliente();
-			linha[3]=projetoArrayList.get(i).getStatus();
-			linha[4]=projetoArrayList.get(i).getDataInicio();
-			linha[5]=projetoArrayList.get(i).getDataTermino();
-			linha[6]=projetoArrayList.get(i).getValProj();
+			linha[3]=projetoArrayList.get(i).getCodStatus();
+			linha[4]=projetoArrayList.get(i).getDataIni();
+			linha[5]=projetoArrayList.get(i).getDataFim();
+			linha[6]=projetoArrayList.get(i).getCustoProj();
 			model.addRow(linha);
 		}
 		
@@ -489,10 +489,10 @@ public class TelaPesquisarProjeto {
 			linha[0]=projetoArrayList.get(i).getNumProj();
 			linha[1]=projetoArrayList.get(i).getNomeCliente();
 			linha[2]=projetoArrayList.get(i).getCnpjCliente();
-			linha[3]=projetoArrayList.get(i).getStatus();
-			linha[4]=projetoArrayList.get(i).getDataInicio();
-			linha[5]=projetoArrayList.get(i).getDataTermino();
-			linha[6]=projetoArrayList.get(i).getValProj();
+			linha[3]=projetoArrayList.get(i).getCodStatus();
+			linha[4]=projetoArrayList.get(i).getDataIni();
+			linha[5]=projetoArrayList.get(i).getDataFim();
+			linha[6]=projetoArrayList.get(i).getCustoProj();
 			model.addRow(linha);
 		}
 		

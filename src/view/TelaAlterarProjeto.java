@@ -92,11 +92,11 @@ public class TelaAlterarProjeto {
 		txtNumProj.setText(projeto.getNumProj());
 		txtNomeCliente.setText(projeto.getNomeCliente());		
 		txtCnpj.setText(projeto.getCnpjCliente());
-		dtInicio.setDate(dateFormat.parse(projeto.getDataInicio()));
-		dtTermino.setDate(dateFormat.parse(projeto.getDataTermino()));
+		dtInicio.setDate(dateFormat.parse(projeto.getDataIni()));
+		dtTermino.setDate(dateFormat.parse(projeto.getDataFim()));
 		cmbStatus.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		cmbStatus.setSelectedIndex((projeto.getStatus().intern() == "Em negociação" ? 0:1));
-		txtValor.setText(String.valueOf(projeto.getValProj()));
+		txtValor.setText(String.valueOf(projeto.getCustoProj()));
 		txtQtdGer.setText(String.valueOf(projeto.getQtdGer()));
 		txtQtdCoord.setText(String.valueOf(projeto.getQtdCoord()));
 		txtQtdArq.setText(String.valueOf(projeto.getQtdArq()));
