@@ -8,6 +8,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 import java.awt.Font;
@@ -87,7 +89,7 @@ public class TelaLogin {
 						e.printStackTrace();
 					}
 				
-				}else {
+				} else {
 					JOptionPane.showMessageDialog(null, "Usuário ou Senha incorretos. Tente novamente!");
 				}
 				
@@ -100,6 +102,22 @@ public class TelaLogin {
 		txtSenha.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtSenha.setBounds(90, 92, 154, 20);
 		frmLogin.getContentPane().add(txtSenha);
+		txtSenha.addKeyListener(new KeyListener() {
+			public void keyTyped(KeyEvent e) {
+				
+			}
+			public void keyReleased(KeyEvent e) {
+				
+			}
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == 10) {
+					btnLogar.grabFocus();
+					btnLogar.doClick();
+				} else {
+					
+				}
+			}
+		});
 		
 		JLabel lblLoginSistema = new JLabel("Sistema SAPx");
 		lblLoginSistema.setHorizontalAlignment(SwingConstants.CENTER);
