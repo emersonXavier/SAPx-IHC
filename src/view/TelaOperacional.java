@@ -135,9 +135,10 @@ public class TelaOperacional {
 			ResultSet rs = st.executeQuery(query);
 		
 			while(rs.next()){
-				proj = new Projeto(String.valueOf(rs.getInt("id_proj")), rs.getString("nome_cli"), rs.getString("status"), rs.getString("cnpj_cli"),dateFormat.format(rs.getDate("dt_ini")), dateFormat.format(rs.getDate("dt_ter")), 
-					rs.getFloat("vlr_proj"), rs.getInt("qtdGer"), rs.getInt("qtdCoord"), rs.getInt("qtdArq"), rs.getInt("qtdProgSr"), 
-					rs.getInt("qtdProgPl"), rs.getInt("qtdProgJr"), rs.getInt("qtdDba"));
+				proj = new Projeto(rs.getInt("codProj"), rs.getString("nomeProj"),
+					rs.getInt("codCliente"), rs.getInt("codStatus"), rs.getInt("horasTotais"),
+					dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
+					rs.getDouble("custoProj"), rs.getString("obsProj"));
 				arrayList.add(proj);
 			}
 		
