@@ -45,7 +45,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
 
-
+/* org.h2.jdbc.JdbcSQLException: Column "codProj" not found [42122-197] */
 
 public class TelaPesquisarProjeto {
 
