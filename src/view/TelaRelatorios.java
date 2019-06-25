@@ -82,7 +82,7 @@ public class TelaRelatorios {
 		frmRelat.getContentPane().add(lblRelatriosSapx);
 		
 		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Selecione o relat\u00F3rio desejado...", "Tempo de Conclus\u00E3o dos Projetos", "Lista de fun\u00E7\u00F5es atribu\u00EDdas por projeto", "N\u00FAmero de Projetos iniciados por per\u00EDodo", "Tempo estimado do projeto em rela\u00E7\u00E3o ao tempo m\u00E9dio", "Situa\u00E7\u00E3o atual do projeto, em rela\u00E7\u00E3o ao acordado", "Apontamento de horas planejadas para o projeto, por fun\u00E7\u00E3o", "Lista de fun\u00E7\u00F5es planejadas para o projeto"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Selecione o relat\u00F3rio desejado.", "Tempo de Conclus\u00E3o dos Projetos", "Lista de fun\u00E7\u00F5es atribu\u00EDdas por projeto", "N\u00FAmero de Projetos iniciados por per\u00EDodo", "Tempo estimado do projeto em rela\u00E7\u00E3o ao tempo m\u00E9dio", "Situa\u00E7\u00E3o atual do projeto, em rela\u00E7\u00E3o ao acordado", "Apontamento de horas planejadas para o projeto, por fun\u00E7\u00E3o", "Lista de fun\u00E7\u00F5es planejadas para o projeto"}));
 		comboBox.setToolTipText("");
 		comboBox.setBounds(10, 64, 304, 20);
 		frmRelat.getContentPane().add(comboBox);
@@ -146,9 +146,10 @@ public class TelaRelatorios {
 			
 			
 			while(rs.next()){
-				proj = new Projeto(String.valueOf(rs.getInt("id_proj")), rs.getString("nome_cli"), rs.getString("cnpj_cli"), rs.getString("status"), dateFormat.format(rs.getDate("dt_ini")), dateFormat.format(rs.getDate("dt_ter")), 
-						rs.getFloat("vlr_proj"), rs.getInt("qtdGer"), rs.getInt("qtdCoord"), rs.getInt("qtdArq"), rs.getInt("qtdProgSr"), 
-						rs.getInt("qtdProgPl"), rs.getInt("qtdProgJr"), rs.getInt("qtdDba"));
+				proj = new Projeto(rs.getInt("codProj"), rs.getString("nomeProj"),
+						rs.getInt("codCliente"), rs.getInt("codStatus"), rs.getInt("horasTotais"),
+						dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
+						rs.getDouble("custoProj"), rs.getString("obsProj"));
 				arrayList.add(proj);
 			}
 		
@@ -161,7 +162,7 @@ public class TelaRelatorios {
 	
 	public void populaCmbBox(JComboBox cmbBox, ArrayList<Projeto> arrayList) {
 		for(int i=0; i<arrayList.size(); i++) {
-			cmbBox.insertItemAt(arrayList.get(i).getNumProj(), i);
+			cmbBox.insertItemAt(arrayList.get(i).getCodProj(), i);
 		}
 	}
 	
