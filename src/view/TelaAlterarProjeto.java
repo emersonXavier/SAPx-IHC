@@ -157,13 +157,13 @@ public class TelaAlterarProjeto {
 		frmAlterProj.getContentPane().add(txtCodProj);
 		txtCodProj.setColumns(10);
 		
-		txtNomeCliente = new JTextField();
-		txtNomeCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtNomeCliente.setEditable(false);
-		txtNomeCliente.setColumns(10);
-		txtNomeCliente.setBounds(120, 155, 153, 20);
-		frmAlterProj.getContentPane().add(txtNomeCliente);
-
+/*		txtCnpj = new JTextField();
+		txtCnpj.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtCnpj.setEditable(false);
+		txtCnpj.setColumns(10);
+		txtCnpj.setBounds(120, 155, 153, 20);
+		frmAlterProj.getContentPane().add(txtCnpj);
+*/
 		txtNomeCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtNomeCliente.setEditable(false);
 		txtNomeCliente.setColumns(10);
