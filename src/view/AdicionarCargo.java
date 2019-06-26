@@ -1,12 +1,19 @@
 package view;
 
 import java.awt.EventQueue;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 
+import model.Cargo;
 import model.Projeto;
 
 import javax.swing.JLabel;
@@ -18,6 +25,10 @@ public class AdicionarCargo {
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
+	Connection con;
+	Statement st;
+	Cargo cargo;
+	String url = "";
 
 	/**
 	 * Launch the application.
@@ -51,8 +62,11 @@ public class AdicionarCargo {
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
+		ArrayList<Cargo> arrayList = listaCargos();
+		
 		JComboBox comboBox = new JComboBox();
 		comboBox.setBounds(23, 23, 219, 20);
+		populaCmbBox(comboBox, arrayList);
 		frame.getContentPane().add(comboBox);
 		
 		textField = new JTextField();
@@ -87,10 +101,31 @@ public class AdicionarCargo {
 		frame.getContentPane().add(btnAdicionar);
 	}
 	
+	public ArrayList<Cargo> listaCargos(){
+	ArrayList<Cargo> cargos = new ArrayList<>();
+	try {
+	con = DriverManager.getConnection(url);	
+	st = con.createStatement();
 	
-	public void populaCmbBox(JComboBox cmbBox, ArrayList<Projeto> arrayList) {
+	String sql = "SELECT * FROM CARGOS";
+	
+	ResultSet rs = st.executeQuery(sql);
+	
+	while(rs.next()) {
+		cargo = new Cargo(rs.getInt("CodCargo"), rs.getString("NomeCargo"));
+	}
+	
+	cargos.add(cargo);
+	
+	} catch (SQLException e) {
+		
+	}
+	return cargos;
+	}
+	
+	public void populaCmbBox(JComboBox cmbBox, ArrayList<Cargo> arrayList) {
 		for(int i=0; i<arrayList.size(); i++) {
-			cmbBox.insertItemAt(arrayList.get(i).getNumProj(), i);
+			cmbBox.insertItemAt(arrayList.get(i).getCodCargo(), i);
 		}
 	}
 }
