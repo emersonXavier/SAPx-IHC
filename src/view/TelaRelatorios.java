@@ -7,9 +7,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.LineNumberInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -18,9 +23,17 @@ import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.log.Level;
+import com.itextpdf.text.log.Logger;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import model.Projeto;
 
@@ -119,6 +132,40 @@ public class TelaRelatorios {
 		btnNewButton.setBounds(94, 124, 151, 37);
 		frmRelat.getContentPane().add(btnNewButton);
 		
+		
+		btnNewButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				//instancia de novo documento pdf
+				Document relatorio = new Document();
+				
+				//data atual
+				DateFormat dataformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+				Date dataatual = new Date();
+				
+				//gera relatorio
+				try{
+					PdfWriter.getInstance(relatorio, new FileOutputStream("relat.pdf"));
+					relatorio.open();
+					relatorio.add(new Paragraph("Relatório SAPX"));
+					relatorio.add(new Paragraph(dataformat.format(dataatual)));
+				} catch (DocumentException | FileNotFoundException ex) {
+					JOptionPane.showMessageDialog(null, ex);
+				} finally {
+					relatorio.close();
+				}
+				
+				//exibe relatorio
+		        try {
+		            Desktop.getDesktop().open(new File("relat.pdf"));
+		        } catch (IOException ex) {
+					JOptionPane.showMessageDialog(null, ex);
+				}
+			}
+		});
 		
 		cmbBoxRelatorio.setEnabled(false);
 		cmbBoxRelatorio.setModel(new DefaultComboBoxModel(new String[] {"Selecione o projeto desejado..."}));
