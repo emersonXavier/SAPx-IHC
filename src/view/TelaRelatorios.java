@@ -31,7 +31,7 @@ import javax.swing.JButton;
 import view.TelaPesquisarProjeto;
 
 public class TelaRelatorios {
-
+	
 	private JFrame frmRelat;
 	static String url= "jdbc:h2:mem:DB_PROJ;DB_CLOSE_DELAY=-1;";
 	Connection con;
