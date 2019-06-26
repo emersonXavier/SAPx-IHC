@@ -39,7 +39,7 @@ public class TelaRelatorios {
 	Projeto proj;
 	JComboBox cmbBoxRelatorio = new JComboBox();
 	
-
+	
 	/**
 	 * Launch the application.
 	 */
