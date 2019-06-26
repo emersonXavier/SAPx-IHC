@@ -1,58 +1,53 @@
 -- Criar Tabela Clientes
 CREATE TABLE CLIENTES(
-	CodCliente	NUMERIC(8)		NOT NULL,
+	CodCliente	NUMERIC(8)		NOT NULL PRIMARY KEY,
 	NomeCliente	VARCHAR(20)		NOT NULL,
-	CnpjCliente	VARCHAR(14)		NOT NULL,
-	CONSTRAINTS PK_CLIENTE PRIMARY KEY (CodCliente)
+	CnpjCliente	VARCHAR(14)		NOT NULL
 );
 -- Criar Tabela STATUS
 CREATE TABLE STATUS(
-	CodStatus	NUMERIC(1)		NOT NULL,
-	ObsStatus	VARCHAR(15)		NOT NULL,
-	SubStatus	VARCHAR(15)		NOT NULL,
-	CONSTRAINTS PK_STATUS PRIMARY KEY (CodStatus)
+	CodStatus	NUMERIC(1)		NOT NULL PRIMARY KEY,
+	ObsStatus	VARCHAR(30)		NOT NULL,
+	SubStatus	VARCHAR(30)		NOT NULL
 );
 -- Criar Tabela Projetos
 CREATE TABLE PROJETOS(
-	CodProj		NUMERIC(8)		NOT NULL,
+	CodProj		NUMERIC(8)		NOT NULL PRIMARY KEY,
 	NomeProj	VARCHAR(20)		NOT NULL,
-	CodCliente	NUMERIC(8)		NOT NULL,
-	CodStatus	NUMERIC(1)		NOT NULL,
+	CodCliente	NUMERIC(8),
+	CodStatus	NUMERIC(1),
 	HorasTotais	NUMERIC(6)		NOT NULL,
 	DataIni		DATE			NOT NULL,
 	DataFim		DATE			NOT NULL,
 	CustoProj	NUMERIC(10)		NOT NULL,
 	ObsProj		VARCHAR(60)		NOT NULL,
-	CONSTRAINTS PK_PROJ PRIMARY KEY (CodProj),
-	CONSTRAINTS FK_CLI FOREIGN KEY (CodCliente) REFERENCES (CodCliente),
-	CONSTRAINTS FK_STATUS FOREIGN KEY (CodStatus) REFERENCES (CodStatus)
+	FOREIGN KEY (CodCliente) REFERENCES CLIENTES(CodCliente),
+	FOREIGN KEY (CodStatus) REFERENCES STATUS(CodStatus)
 );
 -- Criar Tabela Cargos
 CREATE TABLE CARGOS(
-	CodCargo	NUMERIC(4)		NOT NULL,
-	NomeCargo	VARCHAR(30)		NOT NULL,
-	CONSTRAINTS PK_CARGO PRIMARY KEY (CodCargo)
+	CodCargo	NUMERIC(4)		NOT NULL PRIMARY KEY,
+	NomeCargo	VARCHAR(30)		NOT NULL
 );
 -- Criar Tabela Planejamento de Funcoes
 CREATE TABLE PLANEJARECURSOS(
-	CodProj		NUMERIC(8)		NOT NULL,
-	CodCargo	NUMERIC(8)		NOT NULL,
+	CodProj		NUMERIC(8),
+	CodCargo	NUMERIC(8),
 	QtdRecs		NUMERIC(3)		NOT NULL,
 	HorasTotais	NUMERIC(6)		NOT NULL,
-	ObsRecurso	VARCHAR(20)		NOT NULL,
-	CONSTRAINTS FK_PROJ FOREIGN KEY (CodProj) REFERENCES (CodProj),
-	CONSTRAINTS FK_CARGO FOREIGN KEY (CodCargo) REFERENCES (CodCargo)
+	ObsRecurso	VARCHAR(60)		NOT NULL,
+	FOREIGN KEY (CodProj) REFERENCES PROJETOS(CodProj),
+	FOREIGN KEY (CodCargo) REFERENCES CARGOS(CodCargo)
 );
 -- Criar Tabela Contrato de Projetos
 CREATE TABLE CONTRATOS(
-	CodContrato	NUMERIC(8)		NOT NULL,
-	CodProj		NUMERIC(8)		NOT NULL,
+	CodContrato	NUMERIC(8)		NOT NULL PRIMARY KEY,
+	CodProj		NUMERIC(8),
 	EstimaIni	DATE			NOT NULL,
 	EstimaFim	DATE			NOT NULL,
 	EstimaHoras	NUMERIC(6)		NOT NULL,
-	EstimaCusto	NUMERIC(6)		NOT NULL,
-	CONSTRAINTS PK_CONTRATO PRIMARY KEY (CodContrato),
-	CONSTRAINTS FK_PROJ FOREIGN KEY (CodProj) REFERENCES (CodProj)
+	EstimaCusto	NUMERIC(10)		NOT NULL,
+	FOREIGN KEY (CodProj) REFERENCES PROJETOS(CodProj)
 );
 -- Popular Tabela CLIENTES
 INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000001','Brastemp','12312312000123');
@@ -60,7 +55,7 @@ INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000002','LG
 INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000003','Honda','14313090000133');
 INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000004','Amazon','11443190000181');
 INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000005','Acer','10112881000199');
-INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000003','Sony','15421872000234');
+INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000006','Sony','15421872000234');
 -- Popular Tabela STATUS
 INSERT INTO STATUS(CodStatus, ObsStatus, SubStatus) VALUES('1','Em Negociação', 'Em Negociação');
 INSERT INTO STATUS(CodStatus, ObsStatus, SubStatus) VALUES('2','Contratado', 'Em Desenvolvimento');
@@ -68,14 +63,14 @@ INSERT INTO STATUS(CodStatus, ObsStatus, SubStatus) VALUES('3','Contratado', 'Fi
 INSERT INTO STATUS(CodStatus, ObsStatus, SubStatus) VALUES('4','Contratado', 'Cancelado');
 INSERT INTO STATUS(CodStatus, ObsStatus, SubStatus) VALUES('5','Removido', 'Removido');
 -- Popular Tabela PROJETOS
-INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000001','Integração','00000001','2','3840','2008-09-06','2009-05-06','4000000');
-INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000002','Integração','00000002','2','3840','2010-09-06','2018-05-06','5000000');
-INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000003','Integração','00000003','2','3840','2013-09-06','2019-11-06','9600000');
-INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000004','Integração','00000001','2','3840','2016-03-16','2021-08-21','13400000');
-INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000005','Integração','00000001','1','3840','2017-04-21','2020-08-21','24200000');
-INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000006','Integração','00000004','2','3840','2018-02-10','2025-09-20','68400000');
-INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000007','Integração','00000005','1','3840','2017-02-21','2023-11-30','2800000');
-INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000008','Integração','00000006','2','3840','2015-07-26','2020-04-20','37600000');
+INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000001','Integração','00000001','2','3840','2008-09-06','2009-05-06','4000000', '');
+INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000002','Integração','00000002','2','3840','2010-09-06','2018-05-06','5000000', '');
+INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000003','Integração','00000003','2','3840','2013-09-06','2019-11-06','9600000', '');
+INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000004','Integração','00000001','2','3840','2016-03-16','2021-08-21','13400000', '');
+INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000005','Integração','00000001','1','3840','2017-04-21','2020-08-21','24200000', '');
+INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000006','Integração','00000004','2','3840','2018-02-10','2025-09-20','68400000', '');
+INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000007','Integração','00000005','1','3840','2017-02-21','2023-11-30','2800000', '');
+INSERT INTO PROJETOS(CodProj, NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) VALUES('00000008','Integração','00000006','2','3840','2015-07-26','2020-04-20','37600000', '');
 -- Popular Tabela CARGOS
 INSERT INTO CARGOS(CodCargo, NomeCargo) VALUES('0001','Gerente');
 INSERT INTO CARGOS(CodCargo, NomeCargo) VALUES('0002','Coordenador');

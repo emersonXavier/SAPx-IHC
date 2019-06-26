@@ -280,7 +280,7 @@ public class TelaPesquisarProjeto {
 				));
 		scrollPane.setViewportView(table);
 		
-		JButton btnPesquisar = new JButton("Pesquisar...");
+		JButton btnPesquisar = new JButton("Pesquisar");
 		btnPesquisar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
