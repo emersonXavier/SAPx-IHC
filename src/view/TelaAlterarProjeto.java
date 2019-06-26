@@ -43,12 +43,12 @@ import java.awt.event.ActionEvent;
 public class TelaAlterarProjeto {
 
 	JFrame frmAlterProj;
-	JTextField txtNumProj;
+	JTextField txtCodProj;
 	//JTextField txtCnpj;
 	JTextField txtValor;
 	static //TelaPesquisarProjeto view;
 	Projeto projParalelo;
-	private JTextField txtNomeCliente;
+	private JTextField txtNomeProj;
 	private JTextField txtQtdGer;
 	private JTextField txtQtdCoord;
 	private JTextField txtQtdArq;
@@ -63,7 +63,7 @@ public class TelaAlterarProjeto {
 	Connection con;
 	Statement st;
 	MaskFormatter mskCNPJ = new MaskFormatter("##.###.###/####-##");
-	JFormattedTextField txtCnpj = new JFormattedTextField(mskCNPJ);
+	JFormattedTextField txtNomeCliente = new JFormattedTextField(mskCNPJ);
 
 	/**
 	 * Launch the application.
@@ -89,21 +89,14 @@ public class TelaAlterarProjeto {
 		initialize();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		
-		txtNumProj.setText(projeto.getNumProj());
-		txtNomeCliente.setText(projeto.getNomeCliente());		
-		txtCnpj.setText(projeto.getCnpjCliente());
-		dtInicio.setDate(dateFormat.parse(projeto.getDataInicio()));
-		dtTermino.setDate(dateFormat.parse(projeto.getDataTermino()));
+		txtCodProj.setText(String.valueOf(projeto.getCodProj()));
+		txtNomeProj.setText(projeto.getNomeProj());
+		txtNomeCliente.setText(String.valueOf(projeto.getCodCliente()));
+		dtInicio.setDate(dateFormat.parse(projeto.getDataIni()));
+		dtTermino.setDate(dateFormat.parse(projeto.getDataFim()));
 		cmbStatus.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		cmbStatus.setSelectedIndex((projeto.getStatus().intern() == "Em negociação" ? 0:1));
-		txtValor.setText(String.valueOf(projeto.getValProj()));
-		txtQtdGer.setText(String.valueOf(projeto.getQtdGer()));
-		txtQtdCoord.setText(String.valueOf(projeto.getQtdCoord()));
-		txtQtdArq.setText(String.valueOf(projeto.getQtdArq()));
-		txtQtdProgSr.setText(String.valueOf(projeto.getQtdProgSr()));
-		txtQtdProgPl.setText(String.valueOf(projeto.getQtdProgPl()));
-		txtQtdProgJr.setText(String.valueOf(projeto.getQtdProgJr()));
-		txtQtdDba.setText(String.valueOf(projeto.getQtdDba()));
+/*		cmbStatus.setSelectedIndex((projeto.getStatus().intern() == "Em negociação" ? 0:1));
+*/		txtValor.setText(String.valueOf(projeto.getCustoProj()));
 		
 		JLabel lblNewLabel = new JLabel("Dados do cliente");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
@@ -157,12 +150,12 @@ public class TelaAlterarProjeto {
 		lblValorOrado.setBounds(10, 259, 99, 14);
 		frmAlterProj.getContentPane().add(lblValorOrado);
 		
-		txtNumProj = new JTextField();
-		txtNumProj.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtNumProj.setEditable(false);
-		txtNumProj.setBounds(145, 103, 153, 20);
-		frmAlterProj.getContentPane().add(txtNumProj);
-		txtNumProj.setColumns(10);
+		txtCodProj = new JTextField();
+		txtCodProj.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtCodProj.setEditable(false);
+		txtCodProj.setBounds(145, 103, 153, 20);
+		frmAlterProj.getContentPane().add(txtCodProj);
+		txtCodProj.setColumns(10);
 		
 /*		txtCnpj = new JTextField();
 		txtCnpj.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -171,11 +164,11 @@ public class TelaAlterarProjeto {
 		txtCnpj.setBounds(120, 155, 153, 20);
 		frmAlterProj.getContentPane().add(txtCnpj);
 */
-		txtCnpj.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtCnpj.setEditable(false);
-		txtCnpj.setColumns(10);
-		txtCnpj.setBounds(145, 155, 153, 20);
-		frmAlterProj.getContentPane().add(txtCnpj);
+		txtNomeCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtNomeCliente.setEditable(false);
+		txtNomeCliente.setColumns(10);
+		txtNomeCliente.setBounds(145, 155, 153, 20);
+		frmAlterProj.getContentPane().add(txtNomeCliente);
 		
 		txtValor = new JTextField();
 		txtValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -206,12 +199,12 @@ public class TelaAlterarProjeto {
 		dtTermino.setBounds(145, 207, 153, 20);
 		frmAlterProj.getContentPane().add(dtTermino);
 		
-		txtNomeCliente = new JTextField();
-		txtNomeCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtNomeCliente.setEditable(false);
-		txtNomeCliente.setColumns(10);
-		txtNomeCliente.setBounds(145, 129, 153, 20);
-		frmAlterProj.getContentPane().add(txtNomeCliente);
+		txtNomeProj = new JTextField();
+		txtNomeProj.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtNomeProj.setEditable(false);
+		txtNomeProj.setColumns(10);
+		txtNomeProj.setBounds(145, 129, 153, 20);
+		frmAlterProj.getContentPane().add(txtNomeProj);
 		
 		JLabel lblNomeDoCliente_1 = new JLabel("Cliente:");
 		lblNomeDoCliente_1.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -310,7 +303,7 @@ public class TelaAlterarProjeto {
 	}
 	
 	public void limpaCampos() {
-		txtNumProj.setText(null);
+		txtCodProj.setText(null);
 	}
 	
 	public void alteraValores(){
@@ -325,7 +318,7 @@ public class TelaAlterarProjeto {
 					+ "qtdCoord="+ Integer.parseInt(txtQtdCoord.getText()) + ", qtdArq=" + Integer.parseInt(txtQtdArq.getText()) + ", " 
 					+ "qtdProgSr=" + Integer.parseInt(txtQtdProgSr.getText()) + ", qtdProgPl=" + Integer.parseInt(txtQtdProgPl.getText()) + ", " 
 					+ "qtdProgJr=" + Integer.parseInt(txtQtdProgJr.getText()) + ", qtdDba="+ Integer.parseInt(txtQtdDba.getText()) 
-					+ "WHERE id_proj=" + Integer.parseInt(txtNumProj.getText()));
+					+ "WHERE id_proj=" + Integer.parseInt(txtCodProj.getText()));
 
 			JOptionPane.showMessageDialog(null, "Projeto editado com sucesso!");
 			
