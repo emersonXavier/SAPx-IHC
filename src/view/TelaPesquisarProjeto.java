@@ -14,6 +14,7 @@ import org.h2.bnf.context.DbTableOrView;
 import org.h2.command.ddl.TruncateTable;
 import org.h2.table.Table;
 import org.h2.table.TableBase;
+import org.h2.tools.RunScript;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -43,6 +44,7 @@ import model.Projeto;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.FileReader;
 import java.awt.event.ActionEvent;
 
 /* org.h2.jdbc.JdbcSQLException: Column "codProj" not found [42122-197] */
@@ -70,6 +72,10 @@ public class TelaPesquisarProjeto {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					Connection con = DriverManager.getConnection(url);
+					Statement st = con.createStatement();
+					RunScript.execute(con, new FileReader("/lib/create-tables.sql"));
+					
 					TelaPesquisarProjeto window = new TelaPesquisarProjeto();
 					window.frmPesquisa.setVisible(true);
 				} catch (Exception e) {
