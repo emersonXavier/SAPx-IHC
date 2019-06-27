@@ -166,16 +166,19 @@ public class TelaOperacional {
 		
 			while(rs.next()){
 				proj = new Projeto(rs.getInt("codProj"), rs.getString("nomeProj"),
-					rs.getInt("codCliente"), rs.getInt("codStatus"), rs.getInt("horasTotais"),
-					dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
-					rs.getDouble("custoProj"), rs.getString("obsProj"));
+						rs.getInt("codCliente"), rs.getInt("codStatus"), rs.getInt("horasTotais"),
+						dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
+						rs.getDouble("custoProj"), rs.getString("obsProj"));
+				
 				arrayList.add(proj);
 			}
-		
+			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e);
-		}	
+		}
+		
 		return arrayList;
+		
 	}
 	/**
 	 * Initialize the contents of the frame.

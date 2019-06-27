@@ -72,10 +72,6 @@ public class TelaPesquisarProjeto {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Connection con = DriverManager.getConnection(url);
-					Statement st = con.createStatement();
-					RunScript.execute(con, new FileReader("/lib/create-tables.sql"));
-					
 					TelaPesquisarProjeto window = new TelaPesquisarProjeto();
 					window.frmPesquisa.setVisible(true);
 				} catch (Exception e) {
@@ -360,41 +356,39 @@ public class TelaPesquisarProjeto {
 		
 	}
 	
-	public ArrayList<Projeto> listaProjeto(){ 
+	public ArrayList<Projeto> listaProjeto(){
 		
-	ArrayList<Projeto> arrayList = new ArrayList<>();
-	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-	try {
-		con = DriverManager.getConnection(url);	
-		st = con.createStatement();
+		ArrayList<Projeto> arrayList = new ArrayList<>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		
-		String query = "SELECT * FROM PROJETOS";
-		
-		ResultSet rs = st.executeQuery(query);
-		
-		
-		while(rs.next()){
+		try {
+			con = DriverManager.getConnection(url);	
+			st = con.createStatement();
+			
+			String query = "SELECT * FROM PROJETOS";
+			
+			ResultSet rs = st.executeQuery(query);
+			
+			while(rs.next()){
 				proj = new Projeto(rs.getInt("codProj"), rs.getString("nomeProj"),
-					rs.getInt("codCliente"), rs.getInt("codStatus"), rs.getInt("horasTotais"),
-					dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
-					rs.getDouble("custoProj"), rs.getString("obsProj"));
-			arrayList.add(proj);
+				rs.getInt("codCliente"), rs.getInt("codStatus"), rs.getInt("horasTotais"),
+				dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
+				rs.getDouble("custoProj"), rs.getString("obsProj"));
+				
+				arrayList.add(proj);
+				}
+			
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, e);
+				}
+		return arrayList;
 		}
-	
-		
-	} catch (Exception e) {
-		JOptionPane.showMessageDialog(null, e);
-	}	
-	return arrayList;
-	
-	}
 	
 	public void mostraProjeto(){
 		
 		ArrayList<Projeto> projetoArrayList = listaProjeto();
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		Object [] coluna = new Object[7];
+		Object [] coluna = new Object[8];
 		for(int i=0; i<projetoArrayList.size(); i++) {
 			coluna[0]=projetoArrayList.get(i).getCodProj();
 			coluna[1]=projetoArrayList.get(i).getNomeProj();
@@ -408,6 +402,7 @@ public class TelaPesquisarProjeto {
 		}
 		
 	}
+	
 	
 	public void apagaTabela() {
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
