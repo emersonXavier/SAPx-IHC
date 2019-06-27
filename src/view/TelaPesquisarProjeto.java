@@ -54,6 +54,7 @@ public class TelaPesquisarProjeto {
 	private JFrame frmPesquisa;
 	private JTable table;
 	Projeto proj;
+	TelaAdicionarProjeto viewTelaAdicionar;
 	static String url = "jdbc:h2:mem:DB_PROJ;DB_CLOSE_DELAY=-1;";
 	Connection con;
 	Statement st;
@@ -86,7 +87,17 @@ public class TelaPesquisarProjeto {
 	 */
 	public TelaPesquisarProjeto() {
 		initialize();
+		rodarScript();
 		mostraProjeto();
+	}
+	public void rodarScript() {
+		try {
+			Connection con = DriverManager.getConnection(url);
+			Statement st = con.createStatement();
+			RunScript.execute(con, new FileReader("lib/create-tables.sql"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -95,7 +106,7 @@ public class TelaPesquisarProjeto {
 	private void initialize() {
 		frmPesquisa = new JFrame();
 		frmPesquisa.setTitle("SAPx");
-		frmPesquisa.setBounds(100, 100, 1000, 496);
+		frmPesquisa.setBounds(100, 100, 1000, 528);
 		frmPesquisa.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmPesquisa.getContentPane().setLayout(null);
 		lblDataTrmino.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -212,7 +223,7 @@ public class TelaPesquisarProjeto {
 		frmPesquisa.getContentPane().add(scrollPane);
 
 			
-		JLabel lblPesquisarProjeto = new JLabel("Pesquisar Projeto");
+		JLabel lblPesquisarProjeto = new JLabel("Projetos");
 		lblPesquisarProjeto.setBounds(370, 0, 264, 42);
 		lblPesquisarProjeto.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPesquisarProjeto.setFont(new Font("Tahoma", Font.PLAIN, 24));
@@ -226,7 +237,7 @@ public class TelaPesquisarProjeto {
 		
 		JButton btnAlterar = new JButton("Alterar Projeto");
 		btnAlterar.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnAlterar.setBounds(834, 52, 135, 23);
+		btnAlterar.setBounds(834, 50, 135, 25);
 		btnAlterar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				TelaAlterarProjeto telaAltera;
@@ -245,7 +256,7 @@ public class TelaPesquisarProjeto {
 		
 		JButton btnExcluir = new JButton("Excluir Projeto");
 		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnExcluir.setBounds(689, 52, 135, 23);
+		btnExcluir.setBounds(834, 82, 135, 25);
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -275,7 +286,7 @@ public class TelaPesquisarProjeto {
 		table.setModel(new DefaultTableModel(
 				new Object[][] {}, 
 				new String[] {
-						"Numero Projeto", "Nome Cliente", "CNPJ", "Status", "Data Inicio", "Data Fim", "Valor Projeto"
+						"Nome Projeto", "Nome Cliente", "CNPJ", "Status", "Data Inicio", "Data Fim", "Valor Projeto"
 				}
 				
 				
@@ -309,7 +320,7 @@ public class TelaPesquisarProjeto {
 				}
 			}
 		});
-		btnPesquisar.setBounds(400, 53, 130, 23);
+		btnPesquisar.setBounds(400, 53, 135, 25);
 		frmPesquisa.getContentPane().add(btnPesquisar);
 		cmbPesquisa.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		
@@ -332,8 +343,47 @@ public class TelaPesquisarProjeto {
 				btnAlterar.setEnabled(false);
 			}
 		});
-		btnResetTable.setBounds(880, 16, 89, 23);
+		btnResetTable.setBounds(547, 53, 135, 25);
 		frmPesquisa.getContentPane().add(btnResetTable);
+		
+		JButton btnAdicionarProjeto = new JButton("Incluir Projeto");
+		btnAdicionarProjeto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					viewTelaAdicionar = new TelaAdicionarProjeto();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				viewTelaAdicionar.frmAddProj.setVisible(true);
+			}
+		});
+		btnAdicionarProjeto.setBounds(834, 18, 135, 25);
+		frmPesquisa.getContentPane().add(btnAdicionarProjeto);
+		
+		JButton btnNewButton = new JButton("Relat\u00F3rios");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TelaRelatorios tela = new TelaRelatorios();
+				tela.main(null);
+			}
+		});
+		btnNewButton.setBounds(834, 443, 135, 25);
+		frmPesquisa.getContentPane().add(btnNewButton);
+		
+		JButton btnSair = new JButton("Encerrar");
+		btnSair.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (JOptionPane.showConfirmDialog(null, "Tem certeza de que deseja sair?", "Encerrar Sessão", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					frmPesquisa.dispose();
+				}
+				else {
+					
+				}
+			}
+		});
+		btnSair.setBounds(400, 443, 135, 25);
+		frmPesquisa.getContentPane().add(btnSair);
 		
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			
@@ -481,7 +531,7 @@ public class TelaPesquisarProjeto {
 				
 		ArrayList<Projeto> projetoArrayList = pesquisaProjeto(arg1, arg2, dadoPesquisa, dadoPesquisa2);
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		Object [] coluna = new Object[7];
+		Object [] coluna = new Object[8];
 		for(int i=0; i<projetoArrayList.size(); i++) {
 			coluna[0]=projetoArrayList.get(i).getCodProj();
 			coluna[1]=projetoArrayList.get(i).getNomeProj();
