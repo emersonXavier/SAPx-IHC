@@ -32,6 +32,10 @@ public class Projeto {
 		
 	}
 	
+	public Projeto(int codProj) {
+		
+	}
+	
 	public Projeto(int codProj, String nomeProj, int codCliente, int codStatus, int horasTotais,
 			String dataIni, String dataFim, double custoProj, String obsProj) {
 		super();

@@ -18,6 +18,11 @@ public class Cliente {
 		
 	}
 	
+	public Cliente(String nomeCliente) {
+		super();
+		this.nomeCliente = nomeCliente;
+	}
+	
 	public Cliente(int codCliente, String nomeCliente, String cnpjCliente) {
 		super();
 		this.codCliente = codCliente;

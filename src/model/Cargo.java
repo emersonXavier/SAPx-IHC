@@ -16,6 +16,11 @@ public class Cargo {
 		
 	}
 	
+	public Cargo(String nomeCargo) {
+		super();
+		this.nomeCargo = nomeCargo;
+	}
+	
 	public Cargo(int codCargo, String nomeCargo) {
 		super();
 		this.codCargo = codCargo;

@@ -40,6 +40,8 @@ import javax.swing.DefaultComboBoxModel;
 import com.toedter.calendar.JDateChooser;
 
 import model.Projeto;
+import model.ProjetoTabela;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -51,7 +53,7 @@ public class TelaPesquisarProjeto {
 
 	private JFrame frmPesquisa;
 	private JTable table;
-	Projeto proj;
+	ProjetoTabela proj;
 	static String url = "jdbc:h2:mem:DB_PROJ;DB_CLOSE_DELAY=-1;";
 	Connection con;
 	Statement st;
@@ -123,7 +125,7 @@ public class TelaPesquisarProjeto {
 					txtDataPesquisaTer.setVisible(false);
 					cmbPesquisa.setVisible(false);
 					lblDataTrmino.setVisible(false);
-					arg1= "id_proj";
+					arg1= "CodProj";
 					arg2= null;
 					break;
 				case 2:
@@ -133,7 +135,7 @@ public class TelaPesquisarProjeto {
 					txtDataPesquisaTer.setVisible(false);
 					cmbPesquisa.setVisible(false);
 					lblDataTrmino.setVisible(false);
-					arg1= "nome_cli";
+					arg1= "NomeCliente";
 					arg2= null;
 					break;
 				case 3: 
@@ -143,7 +145,7 @@ public class TelaPesquisarProjeto {
 					txtDataPesquisaTer.setVisible(false);
 					cmbPesquisa.setVisible(true);
 					lblDataTrmino.setVisible(false);
-					arg1= "status";
+					arg1= "ObsStatus";
 					arg2= null;
 					break;
 				case 4:
@@ -153,7 +155,7 @@ public class TelaPesquisarProjeto {
 					txtDataPesquisaTer.setVisible(false);
 					cmbPesquisa.setVisible(false);
 					lblDataTrmino.setVisible(false);
-					arg1= "dt_ini";
+					arg1= "DataIni";
 					arg2= null;
 					break;
 				case 5:
@@ -163,7 +165,7 @@ public class TelaPesquisarProjeto {
 					txtDataPesquisaTer.setVisible(false);
 					cmbPesquisa.setVisible(false);
 					lblDataTrmino.setVisible(false);
-					arg1= "dt_ter";
+					arg1= "DataFim";
 					arg2= null;
 					break;
 				case 6:
@@ -172,8 +174,8 @@ public class TelaPesquisarProjeto {
 					txtDataPesquisaIni.setVisible(true);
 					txtDataPesquisaTer.setVisible(true);
 					cmbPesquisa.setVisible(false);
-					arg1= "dt_ini";
-					arg2= "dt_ini";
+					arg1= "DataIni";
+					arg2= "DataIni";
 					lblDataTrmino.setVisible(true);
 					break;
 				case 7:
@@ -182,8 +184,8 @@ public class TelaPesquisarProjeto {
 					txtDataPesquisaIni.setVisible(true);
 					txtDataPesquisaTer.setVisible(true);
 					cmbPesquisa.setVisible(false);
-					arg1= "dt_ter";
-					arg2= "dt_ter";
+					arg1= "DataFim";
+					arg2= "DataFim";
 					lblDataTrmino.setVisible(true);
 					break;							
 				
@@ -354,31 +356,34 @@ public class TelaPesquisarProjeto {
 		
 	}
 	
-	public ArrayList<Projeto> listaProjeto(){ 
+	public ArrayList<ProjetoTabela> listaProjeto(){ 
 		
-	ArrayList<Projeto> arrayList = new ArrayList<>();
+	ArrayList<ProjetoTabela> arrayList = new ArrayList<>();
 	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	try {
 		con = DriverManager.getConnection(url);	
 		st = con.createStatement();
 		
-		String query = "SELECT * FROM PROJETOS";
+		//String query = "SELECT * FROM PROJETOS";
+		String query = "SELECT A.CodProj, B.NomeCliente, B.CnpjCliente, C.ObsStatus, A.HorasTotais, A.DataIni, A.DataFim, A.CustoProj, A.ObsProj" +
+		" FROM PROJETOS A, CLIENTES B, STATUS C" +
+		" WHERE (A.CodCliente=B.CodCliente) AND (A.CodStatus=C.CodStatus)";
 		
 		ResultSet rs = st.executeQuery(query);
 		
 		
 		while(rs.next()){
-				proj = new Projeto(rs.getInt("codProj"), rs.getString("nomeProj"),
-					rs.getInt("codCliente"), rs.getInt("codStatus"), rs.getInt("horasTotais"),
+				proj = new ProjetoTabela(rs.getInt("codProj"), rs.getString("nomeCliente"),
+					rs.getString("cnpjCliente"), rs.getString("obsStatus"), rs.getInt("horasTotais"),
 					dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
-					rs.getDouble("custoProj"), rs.getString("obsProj"));
+					rs.getInt("custoProj"), rs.getString("obsProj"));
 			arrayList.add(proj);
 		}
 	
 		
 	} catch (Exception e) {
-		JOptionPane.showMessageDialog(null, e);
+		JOptionPane.showMessageDialog(null, e.getMessage(), "ERRO AO MOSTRAR TELA", JOptionPane.ERROR_MESSAGE);
 	}	
 	return arrayList;
 	
@@ -386,18 +391,18 @@ public class TelaPesquisarProjeto {
 	
 	public void mostraProjeto(){
 		
-		ArrayList<Projeto> projetoArrayList = listaProjeto();
+		ArrayList<ProjetoTabela> projetoArrayList = listaProjeto();
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		Object [] coluna = new Object[7];
+		Object [] coluna = new Object[8];
 		for(int i=0; i<projetoArrayList.size(); i++) {
 			coluna[0]=projetoArrayList.get(i).getCodProj();
-			coluna[1]=projetoArrayList.get(i).getNomeProj();
-			coluna[2]=projetoArrayList.get(i).getCodCliente();
-			coluna[3]=projetoArrayList.get(i).getCodStatus();
-			coluna[4]=projetoArrayList.get(i).getHorasTotais();
-			coluna[5]=projetoArrayList.get(i).getDataIni();
-			coluna[6]=projetoArrayList.get(i).getDataFim();
-			coluna[7]=projetoArrayList.get(i).getCustoProj();
+			coluna[1]=projetoArrayList.get(i).getNomeCliente();
+			coluna[2]=projetoArrayList.get(i).getCnpjCliente();
+			coluna[3]=projetoArrayList.get(i).getObsStatus();
+			//coluna[4]=projetoArrayList.get(i).getHorasTotais();
+			coluna[4]=projetoArrayList.get(i).getDataIni();
+			coluna[5]=projetoArrayList.get(i).getDataFim();
+			coluna[6]=projetoArrayList.get(i).getCustoProj();
 			model.addRow(coluna);
 		}
 		
@@ -412,14 +417,22 @@ public class TelaPesquisarProjeto {
 		
 	}
 	
-	public void apagaLinha(String idProj) {
+	public void apagaLinha(String CodProj) {
 		try {
 			con = DriverManager.getConnection(url);	
 			st = con.createStatement();
 			
-			String query = "DELETE FROM PROJETOS WHERE id_proj=" + idProj;
+			String query = "DELETE FROM PLANEJARECURSOS WHERE CodProj=" + CodProj;
 			
 			int deletedRows = st.executeUpdate(query);
+			
+			query = "DELETE FROM CONTRATOS WHERE CodProj=" + CodProj;
+			
+			deletedRows = st.executeUpdate(query);
+			
+			query = "DELETE FROM PROJETOS WHERE CodProj=" + CodProj;
+			
+			deletedRows = st.executeUpdate(query);
 			
 			//ResultSet rs = st.execute(query);
 			
@@ -433,10 +446,10 @@ public class TelaPesquisarProjeto {
 	}
 	
 	/* PRESTAR ATENÇÃO AQUI, VOU MUDAR PARAMETROS NO BD HARDCODED */
-	public ArrayList<Projeto> pesquisaProjeto(String arg1, String arg2, String dadoPesquisa, String dadoPesquisa2) {
+	public ArrayList<ProjetoTabela> pesquisaProjeto(String arg1, String arg2, String dadoPesquisa, String dadoPesquisa2) {
 		
 		proj = null;
-		ArrayList<Projeto> arrayList = new ArrayList<>();
+		ArrayList<ProjetoTabela> arrayList = new ArrayList<>();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String query;
 		
@@ -447,24 +460,31 @@ public class TelaPesquisarProjeto {
 			
 			if (arg2==null) {
 			
-			query = "SELECT * FROM PROJETOS WHERE " + arg1 + "= '" + dadoPesquisa + "'";
+				//query = "SELECT * FROM PROJETOS WHERE " + arg1 + "= '" + dadoPesquisa + "'";
 			
+				query = "SELECT A.CodProj, B.NomeCliente, B.CnpjCliente, C.ObsStatus, A.HorasTotais, A.DataIni, A.DataFim, A.CustoProj, A.ObsProj" +
+				" FROM PROJETOS A, CLIENTES B, STATUS C" +
+				" WHERE (A.CodCliente=B.CodCliente) AND (A.CodStatus=C.CodStatus) AND "+ arg1 + "= '" + dadoPesquisa + "'";  
+				
 			} else {
 				
-			query = 	"SELECT * FROM PROJETOS WHERE " + arg1 + ">= '" + dadoPesquisa + "' AND " + arg2 + " <= '"
-					+ dadoPesquisa2 + "'";
+				//query = 	"SELECT * FROM PROJETOS WHERE " + arg1 + ">= '" + dadoPesquisa + "' AND " + arg2 + " <= '"	+ dadoPesquisa2 + "'";
+				query = "SELECT A.CodProj, B.NomeCliente, B.CnpjCliente, C.ObsStatus, A.HorasTotais, A.DataIni, A.DataFim, A.CustoProj, A.ObsProj" +
+						" FROM PROJETOS A, CLIENTES B, STATUS C" +
+						" WHERE (A.CodCliente=B.CodCliente) AND (A.CodStatus=C.CodStatus) AND " 
+						+ arg1 + ">= '" + dadoPesquisa + "' AND " + arg2 + " <= '"	+ dadoPesquisa2 + "'";
 			}
 			
 			ResultSet rs = st.executeQuery(query);
 			
 			
 			while(rs.next()){
-				proj = new Projeto(rs.getInt("codProj"), rs.getString("nomeProj"),
-						rs.getInt("codCliente"), rs.getInt("codStatus"), rs.getInt("horasTotais"),
-						dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
-						rs.getDouble("custoProj"), rs.getString("obsProj"));
-				arrayList.add(proj);
-			}
+				proj = new ProjetoTabela(rs.getInt("codProj"), rs.getString("nomeCliente"),
+					rs.getString("cnpjCliente"), rs.getString("obsStatus"), rs.getInt("horasTotais"),
+					dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
+					rs.getInt("custoProj"), rs.getString("obsProj"));
+			arrayList.add(proj);
+		}
 		
 			
 		} catch (SQLException e) {
@@ -478,18 +498,18 @@ public class TelaPesquisarProjeto {
 	public void mostraProjetoPesquisa(){
 		
 				
-		ArrayList<Projeto> projetoArrayList = pesquisaProjeto(arg1, arg2, dadoPesquisa, dadoPesquisa2);
+		ArrayList<ProjetoTabela> projetoArrayList = pesquisaProjeto(arg1, arg2, dadoPesquisa, dadoPesquisa2);
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
 		Object [] coluna = new Object[7];
 		for(int i=0; i<projetoArrayList.size(); i++) {
 			coluna[0]=projetoArrayList.get(i).getCodProj();
-			coluna[1]=projetoArrayList.get(i).getNomeProj();
-			coluna[2]=projetoArrayList.get(i).getCodCliente();
-			coluna[3]=projetoArrayList.get(i).getCodStatus();
-			coluna[4]=projetoArrayList.get(i).getHorasTotais();
-			coluna[5]=projetoArrayList.get(i).getDataIni();
-			coluna[6]=projetoArrayList.get(i).getDataFim();
-			coluna[7]=projetoArrayList.get(i).getCustoProj();
+			coluna[1]=projetoArrayList.get(i).getNomeCliente();
+			coluna[2]=projetoArrayList.get(i).getCnpjCliente();
+			coluna[3]=projetoArrayList.get(i).getObsStatus();
+			//coluna[4]=projetoArrayList.get(i).getHorasTotais();
+			coluna[4]=projetoArrayList.get(i).getDataIni();
+			coluna[5]=projetoArrayList.get(i).getDataFim();
+			coluna[6]=projetoArrayList.get(i).getCustoProj();
 			model.addRow(coluna);
 		}
 		

@@ -14,20 +14,25 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.text.MaskFormatter;
 
+import model.Cliente;
 import model.Projeto;
+import model.ProjetoTabela;
 import model.ProjetoTableModel;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.nio.channels.NetworkChannel;
+import java.security.acl.LastOwnerException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.event.ActionEvent;
@@ -52,21 +57,25 @@ import javax.swing.border.EtchedBorder;
 import java.awt.Window.Type;
 import javax.swing.JDesktopPane;
 import javax.swing.JFormattedTextField;
+import javax.swing.JEditorPane;
+import javax.swing.JTextArea;
 
 public class TelaAdicionarProjeto {
 
 	JFrame frmAddProj;
-	private JTextField txtNomeCliente;
 	TelaOperacional telaOperacional = new TelaOperacional();
 
 	static ProjetoTableModel tableModel = new ProjetoTableModel();
-	private JTextField txtNumProj;
+	private JTextField txtHoras;
 	private JTextField txtVlrProj;
 	JDateChooser dtInicio, dtTermino;
 	ConexaoBanco conexaoBD = new ConexaoBanco();
 	JComboBox cmbStatus;
-	static Projeto p = new Projeto();
-	String url = "jdbc:h2:mem:DB_PROJ;DB_CLOSE_DELAY=-1;";
+	static Projeto proj = new Projeto();
+	Cliente cliente = new Cliente();
+	static String url= "jdbc:h2:mem:DB_PROJ;DB_CLOSE_DELAY=-1;";
+	Connection con;
+	Statement st;
 	private JTextField txtQtdGerente;
 	private JTextField txtQtdCoord;
 	private JTextField txtQtdArq;
@@ -94,7 +103,8 @@ public class TelaAdicionarProjeto {
 
 	/**
 	 * Create the application.
-	 * @throws ParseException 
+	 * 
+	 * @throws ParseException
 	 */
 	public TelaAdicionarProjeto() throws ParseException {
 		initialize();
@@ -103,30 +113,28 @@ public class TelaAdicionarProjeto {
 
 	/**
 	 * Initialize the contents of the frame.
-	 * @throws ParseException 
+	 * 
+	 * @throws ParseException
 	 */
 	private void initialize() throws ParseException {
 		frmAddProj = new JFrame();
 		frmAddProj.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 14));
 		frmAddProj.setTitle("SAPx");
-		frmAddProj.setBounds(100, 100, 650, 428);
+		frmAddProj.setBounds(100, 100, 1030, 428);
 		frmAddProj.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmAddProj.getContentPane().setLayout(null);
 		
+		ArrayList<Cliente> arrayList = listaCliente();
+		
 		mskCNPJ = new MaskFormatter("##.###.###/####-##");
 		JFormattedTextField txtCnpj = new JFormattedTextField(mskCNPJ);
+		txtCnpj.setEnabled(false);
 		txtCnpj.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
 		JLabel lblNomeCliente = new JLabel("Nome Cliente:");
 		lblNomeCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNomeCliente.setBounds(10, 103, 125, 14);
 		frmAddProj.getContentPane().add(lblNomeCliente);
-
-		txtNomeCliente = new JTextField();
-		txtNomeCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtNomeCliente.setBounds(145, 103, 153, 20);
-		frmAddProj.getContentPane().add(txtNomeCliente);
-		txtNomeCliente.setColumns(10);
 
 		JLabel lblDataIncio = new JLabel("Data in\u00EDcio:");
 		lblDataIncio.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -138,86 +146,27 @@ public class TelaAdicionarProjeto {
 		lblDataTrmino.setBounds(10, 181, 125, 14);
 		frmAddProj.getContentPane().add(lblDataTrmino);
 
-		JButton btnIncluirProjeto = new JButton("Incluir Projeto");
-		btnIncluirProjeto.setBounds(128, 319, 170, 42);
-		btnIncluirProjeto.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-				if ( txtCnpj.getText().equals("") || txtNomeCliente.getText().equals("")
-						|| txtNumProj.getText().equals("") || txtQtdArq.getText().equals("")
-						|| txtQtdCoord.getText().equals("") || txtQtdDba.getText().equals("")
-						|| txtQtdGerente.getText().equals("") || txtQtdProgJr.getText().equals("")
-						|| txtQtdProgPl.getText().equals("") || txtQtdProgSr.getText().equals("")
-						|| txtVlrProj.getText().equals("") || dtInicio.getDate().equals(null)
-						|| dtTermino.getDate().equals(null)) {
-					JOptionPane.showMessageDialog(null,	"Erro na validação de dados. Verifique se todos os campos estão " + 
-					"preenchidos e tente novamente", "Erro ao incluir projeto", JOptionPane.ERROR_MESSAGE);
-
-				} else {
-					if ((dtTermino.getDate().before(dtInicio.getDate()))) {
-						JOptionPane.showMessageDialog(null, "Data de Início maior que a data de término",
-								"ERRO DE VALIDAÇÃO DOS DADOS", JOptionPane.ERROR_MESSAGE);
-					} else {
-
-						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-						try {
-							Connection con = DriverManager.getConnection(url);
-							Statement st = con.createStatement();
-							st.execute(
-									"INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj, qtdGer, qtdCoord, qtdArq,"
-											+ " qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES("
-											+ Integer.parseInt(txtNumProj.getText()) + ", '" + txtNomeCliente.getText()
-											+ "', '" + txtCnpj.getText() + "', '"
-											+ dateFormat.format(dtInicio.getDate()) + "', '"
-											+ dateFormat.format(dtTermino.getDate()) + "', '"
-											+ cmbStatus.getSelectedItem().toString() + "', "
-											+ Float.parseFloat(txtVlrProj.getText()) + ", "
-											+ Integer.parseInt(txtQtdGerente.getText()) + ", "
-											+ Integer.parseInt(txtQtdCoord.getText()) + ", "
-											+ Integer.parseInt(txtQtdArq.getText()) + ", "
-											+ Integer.parseInt(txtQtdProgSr.getText()) + ", "
-											+ Integer.parseInt(txtQtdProgPl.getText()) + ", "
-											+ Integer.parseInt(txtQtdProgJr.getText()) + ", "
-											+ Integer.parseInt(txtQtdDba.getText()) + ")");
-
-							JOptionPane.showMessageDialog(null, "Projeto adicionado com sucesso!");
-							
-							frmAddProj.dispose();
-							// telaOperacional.getMainFrame().setVisible(true);
-							// telaOperacional.frame.setVisible(true);
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
-					}
-
-				}
-			}
-
-		});
-		frmAddProj.getContentPane().add(btnIncluirProjeto);
+		//ANTIGO LOCAL DO BOTÃO
 
 		JLabel status = new JLabel("Status:");
 		status.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		status.setBounds(10, 207, 125, 14);
 		frmAddProj.getContentPane().add(status);
 
-		JLabel lblNProjeto = new JLabel("N\u00BA do Projeto:");
+		JLabel lblNProjeto = new JLabel("Horas Totais:");
 		lblNProjeto.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblNProjeto.setBounds(10, 233, 125, 14);
 		frmAddProj.getContentPane().add(lblNProjeto);
 
-		txtNumProj = new JTextField();
-		txtNumProj.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtNumProj.setBounds(145, 233, 153, 20);
-		txtNumProj.setColumns(10);
-		frmAddProj.getContentPane().add(txtNumProj);
+		txtHoras = new JTextField();
+		txtHoras.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		txtHoras.setBounds(145, 233, 153, 20);
+		txtHoras.setColumns(10);
+		frmAddProj.getContentPane().add(txtHoras);
 
 		JLabel lblValor = new JLabel("Valor do projeto:");
 		lblValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblValor.setBounds(10, 259, 125, 14);
+		lblValor.setBounds(10, 259, 125, 20);
 		frmAddProj.getContentPane().add(lblValor);
 
 		txtVlrProj = new JTextField();
@@ -237,29 +186,28 @@ public class TelaAdicionarProjeto {
 		cmbStatus = new JComboBox();
 		cmbStatus.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		cmbStatus.setBounds(145, 207, 153, 20);
-		cmbStatus.setModel(new DefaultComboBoxModel(new String[] { "Em negociação", "Contratado" }));
+		cmbStatus.setModel(new DefaultComboBoxModel(new String[] { "Em Negociacao", "Contratado" }));
+		cmbStatus.setSelectedIndex(0);
 		frmAddProj.getContentPane().add(cmbStatus);
 
 		JLabel lblCnpj = new JLabel("CNPJ Cliente:");
+		lblCnpj.setEnabled(false);
 		lblCnpj.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		lblCnpj.setBounds(10, 129, 125, 14);
 		frmAddProj.getContentPane().add(lblCnpj);
 
 		txtCnpj.setBounds(145, 129, 153, 20);
 		frmAddProj.getContentPane().add(txtCnpj);
-/*				
-		JLabel lblCpf = new JLabel("CPF Cliente:");
-		lblCpf.setBounds(10, 129, 80, 14);
-		lblCpf.setVisible(false);
-		frmAddProj.getContentPane().add(lblCpf);
-		
-		
-		mskCPF = new MaskFormatter("###.###.###-##");
-		JFormattedTextField txtCpf = new JFormattedTextField(mskCPF);
-		txtCpf.setBounds(120, 129, 153, 20);
-		frmAddProj.getContentPane().add(txtCpf);
-		txtCnpj.setVisible(false);*/
-		
+		/*
+		 * JLabel lblCpf = new JLabel("CPF Cliente:"); lblCpf.setBounds(10, 129, 80,
+		 * 14); lblCpf.setVisible(false); frmAddProj.getContentPane().add(lblCpf);
+		 * 
+		 * 
+		 * mskCPF = new MaskFormatter("###.###.###-##"); JFormattedTextField txtCpf =
+		 * new JFormattedTextField(mskCPF); txtCpf.setBounds(120, 129, 153, 20);
+		 * frmAddProj.getContentPane().add(txtCpf); txtCnpj.setVisible(false);
+		 */
+
 		JButton btnCancelar = new JButton("Cancelar");
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -351,27 +299,193 @@ public class TelaAdicionarProjeto {
 		txtQtdDba.setColumns(10);
 		txtQtdDba.setBounds(550, 259, 40, 20);
 		frmAddProj.getContentPane().add(txtQtdDba);
-		
-		JLabel lblDadosDoCliente = new JLabel("Dados do cliente");
+
+		JLabel lblDadosDoCliente = new JLabel("Dados");
 		lblDadosDoCliente.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblDadosDoCliente.setBounds(10, 70, 170, 22);
 		frmAddProj.getContentPane().add(lblDadosDoCliente);
-		
+
 		JLabel lblHoras = new JLabel("Horas");
 		lblHoras.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblHoras.setBounds(420, 70, 125, 22);
 		frmAddProj.getContentPane().add(lblHoras);
-		
+
 		JButton btnAdicionarCargo = new JButton("Adicionar cargo");
 		btnAdicionarCargo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				AdicionarCargo tela = new AdicionarCargo();
-				tela.main(null);
+
 			}
 		});
-		btnAdicionarCargo.setBounds(510, 329, 114, 23);
+		btnAdicionarCargo.setBounds(510, 319, 153, 42);
 		frmAddProj.getContentPane().add(btnAdicionarCargo);
 		
+		JLabel lblComentriosobservaes = new JLabel("Observa\u00E7\u00F5es");
+		lblComentriosobservaes.setFont(new Font("Tahoma", Font.PLAIN, 18));
+		lblComentriosobservaes.setBounds(654, 77, 197, 22);
+		frmAddProj.getContentPane().add(lblComentriosobservaes);
 		
+		JTextArea txtObs = new JTextArea();
+		txtObs.setBounds(654, 100, 197, 183);
+		frmAddProj.getContentPane().add(txtObs);
+
+		JComboBox cmbCliente = new JComboBox();
+		cmbCliente.setBounds(145, 102, 153, 20);
+		populaCmbBox(cmbCliente, arrayList);
+		cmbCliente.setSelectedIndex(0);
+		frmAddProj.getContentPane().add(cmbCliente);
+
+		JButton btnIncluirProjeto = new JButton("Incluir Projeto");
+		btnIncluirProjeto.setBounds(128, 319, 170, 42);
+		btnIncluirProjeto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+				if (/*txtCnpj.getText().equals("") || txtCnpj.getText().equals("")*/
+				/*
+				 * || txtNumProj.getText().equals("") || txtQtdArq.getText().equals("") ||
+				 * txtQtdCoord.getText().equals("") || txtQtdDba.getText().equals("") ||
+				 * txtQtdGerente.getText().equals("") || txtQtdProgJr.getText().equals("") ||
+				 * txtQtdProgPl.getText().equals("") || txtQtdProgSr.getText().equals("")
+				 */
+						   txtVlrProj.getText().equals("") || dtInicio.getDate().equals(null)
+						|| dtTermino.getDate().equals(null)) {
+					JOptionPane.showMessageDialog(null,
+							"Erro na validação de dados. Verifique se todos os campos estão "
+									+ "preenchidos e tente novamente",
+							"Erro ao incluir projeto", JOptionPane.ERROR_MESSAGE);
+
+				} else {
+					if ((dtTermino.getDate().before(dtInicio.getDate()))) {
+						JOptionPane.showMessageDialog(null, "Data de Início maior que a data de término",
+								"ERRO DE VALIDAÇÃO DOS DADOS", JOptionPane.ERROR_MESSAGE);
+					} else {
+
+						DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+						try {
+							Connection con = DriverManager.getConnection(url);
+							Statement st = con.createStatement();
+							/*
+							 * st.execute("INSERT INTO CLIENTES (NomeCliente, CnpjCliente) VALUES " + "('" +
+							 * txtNomeCliente.getText() + "', '" + txtCnpj.getText() + "')");
+							 */
+							st.execute(
+									"INSERT INTO PROJETOS(NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) "
+											+ "VALUES('"
+											+ cmbCliente.getSelectedItem().toString() + "', "
+											+ "(SELECT A.CodCliente FROM CLIENTES A WHERE NomeCliente='" + cmbCliente.getSelectedItem().toString() +"'), "
+											+ "(SELECT A.CodStatus FROM STATUS A WHERE ObsStatus='" + cmbStatus.getSelectedItem().toString() + "'), "
+											+ Integer.parseInt(txtHoras.getText()) + ", '"
+											+ dateFormat.format(dtInicio.getDate()) + "', '"
+											+ dateFormat.format(dtTermino.getDate()) + "', "											
+											+ Integer.parseInt(txtVlrProj.getText()) + ", '"
+											+ txtObs.getText() + "')");
+											
+											/*+ Integer.parseInt(txtQtdCoord.getText()) + ", "
+											+ Integer.parseInt(txtQtdArq.getText()) + ", "
+											+ Integer.parseInt(txtQtdProgSr.getText()) + ", "
+											+ Integer.parseInt(txtQtdProgPl.getText()) + ", "
+											+ Integer.parseInt(txtQtdProgJr.getText()) + ", "
+											+ Integer.parseInt(txtQtdDba.getText()) +*/ 
+
+							
+							ResultSet rs = st.executeQuery("SELECT * FROM PROJETOS");
+							
+							while(rs.next()) {
+								System.out.println(rs.getInt("CodProj") + "\t" + rs.getString("NomeProj") + "\t" +
+							rs.getInt("CodCliente") + "\t" + rs.getString("CodStatus") + "\t" + rs.getInt("HorasTotais")
+							+ "\t" + dateFormat.format(rs.getDate("DataIni")) + "\t" + dateFormat.format(rs.getDate("DataFim")) 
+							+ "\t" + rs.getInt("CustoProj") + "\t" + rs.getString("ObsProj"));
+								Projeto proj = new Projeto(rs.getInt("CodProj"));
+							}
+							
+							
+							
+							JOptionPane.showMessageDialog(null, "Projeto adicionado com sucesso!");
+							
+							ArrayList<Projeto> teste = listaProjeto();
+
+							TelaAdicionarCargo telaAdicionaCargo = new TelaAdicionarCargo(proj);
+							telaAdicionaCargo.idProj=(listaProjeto().size()-1);
+							telaAdicionaCargo.main(null);
+							
+							//frmAddProj.dispose();
+							// telaOperacional.getMainFrame().setVisible(true);
+							// telaOperacional.frame.setVisible(true);
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+
+					}
+
+				}
+			}
+
+		});
+		frmAddProj.getContentPane().add(btnIncluirProjeto);
+			
 	}
+	
+	public void populaCmbBox(JComboBox cmbBox, ArrayList<Cliente> arrayList) {
+		for(int i=0; i<arrayList.size(); i++) {
+			cmbBox.insertItemAt(arrayList.get(i).getNomeCliente(), i);
+		}
+	}
+	
+	private ArrayList<Cliente> listaCliente() {
+		// TODO Auto-generated method stub
+		ArrayList<Cliente> arrayList = new ArrayList<>();
+
+		try {
+			con = DriverManager.getConnection(url);	
+			st = con.createStatement();
+			
+			String query = "SELECT * FROM CLIENTES";
+			
+			ResultSet rs = st.executeQuery(query);
+			
+			
+			while(rs.next()){
+				cliente = new Cliente(rs.getString("NomeCliente"));
+				arrayList.add(cliente);
+			}
+		
+			
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e);
+		}	
+		return arrayList;
+	}
+	
+	
+	public ArrayList<Projeto> listaProjeto(){ 
+		
+		ArrayList<Projeto> arrayList = new ArrayList<>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+		try {
+			con = DriverManager.getConnection(url);	
+			st = con.createStatement();
+			
+			//String query = "SELECT * FROM PROJETOS";
+			String query = "SELECT A.CodProj, B.NomeCliente, B.CnpjCliente, C.ObsStatus, A.HorasTotais, A.DataIni, A.DataFim, A.CustoProj, A.ObsProj" +
+			" FROM PROJETOS A, CLIENTES B, STATUS C" +
+			" WHERE (A.CodCliente=B.CodCliente) AND (A.CodStatus=C.CodStatus)";
+			
+			ResultSet rs = st.executeQuery(query);
+			
+			
+			while(rs.next()){
+					proj = new Projeto(rs.getInt("codProj"));
+				arrayList.add(proj);
+			}
+		
+			
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "ERRO AO MOSTRAR TELA", JOptionPane.ERROR_MESSAGE);
+		}	
+		return arrayList;
+		
+		}
+	
 }

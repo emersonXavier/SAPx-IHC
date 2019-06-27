@@ -19,6 +19,7 @@ import javax.swing.JFormattedTextField;
 import com.toedter.calendar.JDateChooser;
 
 import model.Projeto;
+import model.ProjetoTabela;
 
 import java.awt.Font;
 import java.sql.Connection;
@@ -85,18 +86,18 @@ public class TelaAlterarProjeto {
 	 * Create the application.
 	 * @throws ParseException 
 	 */
-	public TelaAlterarProjeto(Projeto projeto) throws ParseException {
+	public TelaAlterarProjeto(ProjetoTabela projetoTabela) throws ParseException {
 		initialize();
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		
-		txtCodProj.setText(String.valueOf(projeto.getCodProj()));
-		txtNomeProj.setText(projeto.getNomeProj());
-		txtNomeCliente.setText(String.valueOf(projeto.getCodCliente()));
-		dtInicio.setDate(dateFormat.parse(projeto.getDataIni()));
-		dtTermino.setDate(dateFormat.parse(projeto.getDataFim()));
+		txtCodProj.setText(String.valueOf(projetoTabela.getCodProj()));
+		txtNomeProj.setText(projetoTabela.getNomeCliente());
+		txtNomeCliente.setText(String.valueOf(projetoTabela.getCnpjCliente()));
+		dtInicio.setDate(dateFormat.parse(projetoTabela.getDataIni()));
+		dtTermino.setDate(dateFormat.parse(projetoTabela.getDataFim()));
 		cmbStatus.setFont(new Font("Tahoma", Font.PLAIN, 14));
 /*		cmbStatus.setSelectedIndex((projeto.getStatus().intern() == "Em negociação" ? 0:1));
-*/		txtValor.setText(String.valueOf(projeto.getCustoProj()));
+*/		txtValor.setText(String.valueOf(projetoTabela.getCustoProj()));
 		
 		JLabel lblNewLabel = new JLabel("Dados do cliente");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 18));
