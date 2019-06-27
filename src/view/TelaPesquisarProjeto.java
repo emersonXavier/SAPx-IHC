@@ -87,17 +87,7 @@ public class TelaPesquisarProjeto {
 	 */
 	public TelaPesquisarProjeto() {
 		initialize();
-		rodarScript();
 		mostraProjeto();
-	}
-	public void rodarScript() {
-		try {
-			Connection con = DriverManager.getConnection(url);
-			Statement st = con.createStatement();
-			RunScript.execute(con, new FileReader("lib/create-tables.sql"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
