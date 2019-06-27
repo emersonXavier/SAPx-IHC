@@ -8,16 +8,27 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.io.FileReader;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+
+import org.h2.tools.RunScript;
 
 public class TelaLogin {
 
 	private JFrame frmLogin;
 	private JTextField txtUser;
 	private JPasswordField txtSenha;
+	static String url = "jdbc:h2:mem:DB_PROJ;DB_CLOSE_DELAY=-1;";
+	Connection con;
+	Statement st;
 
 	/**
 	 * Launch the application.
@@ -75,10 +86,11 @@ public class TelaLogin {
 				
 				if(checkLogin(txtUser.getText(), new String(txtSenha.getPassword()))) {
 					
+					rodarScript();
 					JOptionPane.showMessageDialog(null, "BEM VINDO!");
 					
 					try {
-						TelaOperacional tela = new TelaOperacional();
+						TelaPesquisarProjeto tela = new TelaPesquisarProjeto();
 						//tela.frmMain.setVisible(true);
 						tela.main(null);
 						frmLogin.dispose();
@@ -87,7 +99,7 @@ public class TelaLogin {
 						e.printStackTrace();
 					}
 				
-				}else {
+				} else {
 					JOptionPane.showMessageDialog(null, "Usuário ou Senha incorretos. Tente novamente!");
 				}
 				
@@ -100,6 +112,22 @@ public class TelaLogin {
 		txtSenha.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtSenha.setBounds(90, 92, 154, 20);
 		frmLogin.getContentPane().add(txtSenha);
+		txtSenha.addKeyListener(new KeyListener() {
+			public void keyTyped(KeyEvent e) {
+				
+			}
+			public void keyReleased(KeyEvent e) {
+				
+			}
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == 10) {
+					btnLogar.grabFocus();
+					btnLogar.doClick();
+				} else {
+					
+				}
+			}
+		});
 		
 		JLabel lblLoginSistema = new JLabel("Sistema SAPx");
 		lblLoginSistema.setHorizontalAlignment(SwingConstants.CENTER);
@@ -110,5 +138,15 @@ public class TelaLogin {
 	
 	public boolean checkLogin(String user, String pass) {
 		return user.equals("admin") && pass.equals("admin");
+	}
+	
+	public void rodarScript() {
+		try {
+			Connection con = DriverManager.getConnection(url);
+			Statement st = con.createStatement();
+			RunScript.execute(con, new FileReader("lib/create-tables.sql"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

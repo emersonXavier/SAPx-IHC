@@ -14,6 +14,7 @@ import org.h2.bnf.context.DbTableOrView;
 import org.h2.command.ddl.TruncateTable;
 import org.h2.table.Table;
 import org.h2.table.TableBase;
+import org.h2.tools.RunScript;
 
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -43,15 +44,17 @@ import model.Projeto;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.FileReader;
 import java.awt.event.ActionEvent;
 
-
+/* org.h2.jdbc.JdbcSQLException: Column "codProj" not found [42122-197] */
 
 public class TelaPesquisarProjeto {
 
 	private JFrame frmPesquisa;
 	private JTable table;
 	Projeto proj;
+	TelaAdicionarProjeto viewTelaAdicionar;
 	static String url = "jdbc:h2:mem:DB_PROJ;DB_CLOSE_DELAY=-1;";
 	Connection con;
 	Statement st;
@@ -93,7 +96,7 @@ public class TelaPesquisarProjeto {
 	private void initialize() {
 		frmPesquisa = new JFrame();
 		frmPesquisa.setTitle("SAPx");
-		frmPesquisa.setBounds(100, 100, 1000, 496);
+		frmPesquisa.setBounds(100, 100, 1000, 528);
 		frmPesquisa.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmPesquisa.getContentPane().setLayout(null);
 		lblDataTrmino.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -108,7 +111,7 @@ public class TelaPesquisarProjeto {
 		JComboBox comboBox = new JComboBox();
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		comboBox.setBounds(190, 53, 190, 20);
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Selecione o filtro desejado...", "Numero Projeto", "Nome Cliente", "Status", "Data de in\u00EDcio", "Data de termino", "Intervalo entre datas de in\u00EDcio", "Intervalo entre datas de fim"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Selecione o filtro desejado.", "Numero Projeto", "Nome Cliente", "Status", "Data de in\u00EDcio", "Data de termino", "Intervalo entre datas de in\u00EDcio", "Intervalo entre datas de fim"}));
 		frmPesquisa.getContentPane().add(comboBox);
 		comboBox.addActionListener(new ActionListener() {
 			
@@ -210,7 +213,7 @@ public class TelaPesquisarProjeto {
 		frmPesquisa.getContentPane().add(scrollPane);
 
 			
-		JLabel lblPesquisarProjeto = new JLabel("Pesquisar Projeto");
+		JLabel lblPesquisarProjeto = new JLabel("Projetos");
 		lblPesquisarProjeto.setBounds(370, 0, 264, 42);
 		lblPesquisarProjeto.setHorizontalAlignment(SwingConstants.CENTER);
 		lblPesquisarProjeto.setFont(new Font("Tahoma", Font.PLAIN, 24));
@@ -224,7 +227,7 @@ public class TelaPesquisarProjeto {
 		
 		JButton btnAlterar = new JButton("Alterar Projeto");
 		btnAlterar.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnAlterar.setBounds(834, 52, 135, 23);
+		btnAlterar.setBounds(834, 50, 135, 25);
 		btnAlterar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				TelaAlterarProjeto telaAltera;
@@ -243,11 +246,11 @@ public class TelaPesquisarProjeto {
 		
 		JButton btnExcluir = new JButton("Excluir Projeto");
 		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		btnExcluir.setBounds(689, 52, 135, 23);
+		btnExcluir.setBounds(834, 82, 135, 25);
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				if (JOptionPane.showConfirmDialog(btnExcluir, "Deseja excluir o projeto?", "Excluir Projeto", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+				if (JOptionPane.showConfirmDialog(btnExcluir, "Deseja excluir o Projeto?", "Excluir Projeto", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					apagaLinha((table.getValueAt(table.getSelectedRow(), 0)).toString());
 
 					JOptionPane.showMessageDialog(null, "Projeto excluído!");
@@ -273,14 +276,14 @@ public class TelaPesquisarProjeto {
 		table.setModel(new DefaultTableModel(
 				new Object[][] {}, 
 				new String[] {
-						"Numero Projeto", "Nome Cliente", "CNPJ", "Status", "Data Inicio", "Data Fim", "Valor Projeto"
+						"Nome Projeto", "Nome Cliente", "CNPJ", "Status", "Data Inicio", "Data Fim", "Valor Projeto"
 				}
 				
 				
 				));
 		scrollPane.setViewportView(table);
 		
-		JButton btnPesquisar = new JButton("Pesquisar...");
+		JButton btnPesquisar = new JButton("Pesquisar");
 		btnPesquisar.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnPesquisar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -307,7 +310,7 @@ public class TelaPesquisarProjeto {
 				}
 			}
 		});
-		btnPesquisar.setBounds(400, 53, 130, 23);
+		btnPesquisar.setBounds(400, 53, 135, 25);
 		frmPesquisa.getContentPane().add(btnPesquisar);
 		cmbPesquisa.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		
@@ -330,8 +333,47 @@ public class TelaPesquisarProjeto {
 				btnAlterar.setEnabled(false);
 			}
 		});
-		btnResetTable.setBounds(880, 16, 89, 23);
+		btnResetTable.setBounds(547, 53, 135, 25);
 		frmPesquisa.getContentPane().add(btnResetTable);
+		
+		JButton btnAdicionarProjeto = new JButton("Incluir Projeto");
+		btnAdicionarProjeto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				try {
+					viewTelaAdicionar = new TelaAdicionarProjeto();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				viewTelaAdicionar.frmAddProj.setVisible(true);
+			}
+		});
+		btnAdicionarProjeto.setBounds(834, 18, 135, 25);
+		frmPesquisa.getContentPane().add(btnAdicionarProjeto);
+		
+		JButton btnNewButton = new JButton("Relat\u00F3rios");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				TelaRelatorios tela = new TelaRelatorios();
+				tela.main(null);
+			}
+		});
+		btnNewButton.setBounds(834, 443, 135, 25);
+		frmPesquisa.getContentPane().add(btnNewButton);
+		
+		JButton btnSair = new JButton("Encerrar");
+		btnSair.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (JOptionPane.showConfirmDialog(null, "Tem certeza de que deseja sair?", "Encerrar Sessão", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+					frmPesquisa.dispose();
+				}
+				else {
+					
+				}
+			}
+		});
+		btnSair.setBounds(400, 443, 135, 25);
+		frmPesquisa.getContentPane().add(btnSair);
 		
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			
@@ -350,63 +392,55 @@ public class TelaPesquisarProjeto {
 				if (!(table.isFocusable())) table.getSelectionModel().clearSelection();				
 			}
 		});
-
-	
-	
-	
-	
-	
-	
-	
-		
 	}
 	
-	public ArrayList<Projeto> listaProjeto(){ 
+	public ArrayList<Projeto> listaProjeto(){
 		
-	ArrayList<Projeto> arrayList = new ArrayList<>();
-	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-
-	try {
-		con = DriverManager.getConnection(url);	
-		st = con.createStatement();
+		ArrayList<Projeto> arrayList = new ArrayList<>();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		
-		String query = "SELECT * FROM PROJETOS";
-		
-		ResultSet rs = st.executeQuery(query);
-		
-		
-		while(rs.next()){
-			proj = new Projeto(String.valueOf(rs.getInt("id_proj")), rs.getString("nome_cli"), rs.getString("cnpj_cli"), rs.getString("status"), dateFormat.format(rs.getDate("dt_ini")), dateFormat.format(rs.getDate("dt_ter")), 
-					rs.getFloat("vlr_proj"), rs.getInt("qtdGer"), rs.getInt("qtdCoord"), rs.getInt("qtdArq"), rs.getInt("qtdProgSr"), 
-					rs.getInt("qtdProgPl"), rs.getInt("qtdProgJr"), rs.getInt("qtdDba"));
-			arrayList.add(proj);
+		try {
+			con = DriverManager.getConnection(url);	
+			st = con.createStatement();
+			
+			String query = "SELECT * FROM PROJETOS";
+			
+			ResultSet rs = st.executeQuery(query);
+			
+			while(rs.next()){
+				proj = new Projeto(rs.getInt("codProj"), rs.getString("nomeProj"),
+				rs.getInt("codCliente"), rs.getInt("codStatus"), rs.getInt("horasTotais"),
+				dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
+				rs.getDouble("custoProj"), rs.getString("obsProj"));
+				
+				arrayList.add(proj);
+				}
+			
+			} catch (Exception e) {
+				JOptionPane.showMessageDialog(null, e);
+				}
+		return arrayList;
 		}
-	
-		
-	} catch (Exception e) {
-		JOptionPane.showMessageDialog(null, e);
-	}	
-	return arrayList;
-	
-	}
 	
 	public void mostraProjeto(){
 		
 		ArrayList<Projeto> projetoArrayList = listaProjeto();
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		Object [] linha = new Object[7];
+		Object [] coluna = new Object[8];
 		for(int i=0; i<projetoArrayList.size(); i++) {
-			linha[0]=projetoArrayList.get(i).getNumProj();
-			linha[1]=projetoArrayList.get(i).getNomeCliente();
-			linha[2]=projetoArrayList.get(i).getCnpjCliente();
-			linha[3]=projetoArrayList.get(i).getStatus();
-			linha[4]=projetoArrayList.get(i).getDataInicio();
-			linha[5]=projetoArrayList.get(i).getDataTermino();
-			linha[6]=projetoArrayList.get(i).getValProj();
-			model.addRow(linha);
+			coluna[0]=projetoArrayList.get(i).getCodProj();
+			coluna[1]=projetoArrayList.get(i).getNomeProj();
+			coluna[2]=projetoArrayList.get(i).getCodCliente();
+			coluna[3]=projetoArrayList.get(i).getCodStatus();
+			coluna[4]=projetoArrayList.get(i).getHorasTotais();
+			coluna[5]=projetoArrayList.get(i).getDataIni();
+			coluna[6]=projetoArrayList.get(i).getDataFim();
+			coluna[7]=projetoArrayList.get(i).getCustoProj();
+			model.addRow(coluna);
 		}
 		
 	}
+	
 	
 	public void apagaTabela() {
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
@@ -437,6 +471,7 @@ public class TelaPesquisarProjeto {
 		}
 	}
 	
+	/* PRESTAR ATENÇÃO AQUI, VOU MUDAR PARAMETROS NO BD HARDCODED */
 	public ArrayList<Projeto> pesquisaProjeto(String arg1, String arg2, String dadoPesquisa, String dadoPesquisa2) {
 		
 		proj = null;
@@ -463,9 +498,10 @@ public class TelaPesquisarProjeto {
 			
 			
 			while(rs.next()){
-				proj = new Projeto(String.valueOf(rs.getInt("id_proj")), rs.getString("nome_cli"), rs.getString("cnpj_cli"), rs.getString("status"), dateFormat.format(rs.getDate("dt_ini")), dateFormat.format(rs.getDate("dt_ter")), 
-						rs.getFloat("vlr_proj"), rs.getInt("qtdGer"), rs.getInt("qtdCoord"), rs.getInt("qtdArq"), rs.getInt("qtdProgSr"), 
-						rs.getInt("qtdProgPl"), rs.getInt("qtdProgJr"), rs.getInt("qtdDba"));
+				proj = new Projeto(rs.getInt("codProj"), rs.getString("nomeProj"),
+						rs.getInt("codCliente"), rs.getInt("codStatus"), rs.getInt("horasTotais"),
+						dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
+						rs.getDouble("custoProj"), rs.getString("obsProj"));
 				arrayList.add(proj);
 			}
 		
@@ -483,16 +519,17 @@ public class TelaPesquisarProjeto {
 				
 		ArrayList<Projeto> projetoArrayList = pesquisaProjeto(arg1, arg2, dadoPesquisa, dadoPesquisa2);
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		Object [] linha = new Object[7];
+		Object [] coluna = new Object[8];
 		for(int i=0; i<projetoArrayList.size(); i++) {
-			linha[0]=projetoArrayList.get(i).getNumProj();
-			linha[1]=projetoArrayList.get(i).getNomeCliente();
-			linha[2]=projetoArrayList.get(i).getCnpjCliente();
-			linha[3]=projetoArrayList.get(i).getStatus();
-			linha[4]=projetoArrayList.get(i).getDataInicio();
-			linha[5]=projetoArrayList.get(i).getDataTermino();
-			linha[6]=projetoArrayList.get(i).getValProj();
-			model.addRow(linha);
+			coluna[0]=projetoArrayList.get(i).getCodProj();
+			coluna[1]=projetoArrayList.get(i).getNomeProj();
+			coluna[2]=projetoArrayList.get(i).getCodCliente();
+			coluna[3]=projetoArrayList.get(i).getCodStatus();
+			coluna[4]=projetoArrayList.get(i).getHorasTotais();
+			coluna[5]=projetoArrayList.get(i).getDataIni();
+			coluna[6]=projetoArrayList.get(i).getDataFim();
+			coluna[7]=projetoArrayList.get(i).getCustoProj();
+			model.addRow(coluna);
 		}
 		
 	}

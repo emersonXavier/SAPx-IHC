@@ -362,6 +362,16 @@ public class TelaAdicionarProjeto {
 		lblHoras.setBounds(420, 70, 125, 22);
 		frmAddProj.getContentPane().add(lblHoras);
 		
+		JButton btnAdicionarCargo = new JButton("Adicionar cargo");
+		btnAdicionarCargo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				AdicionarCargo tela = new AdicionarCargo();
+				tela.main(null);
+			}
+		});
+		btnAdicionarCargo.setBounds(510, 329, 114, 23);
+		frmAddProj.getContentPane().add(btnAdicionarCargo);
+		
 		
 	}
 }

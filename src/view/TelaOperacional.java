@@ -21,6 +21,11 @@ import com.toedter.calendar.JDateChooser;
 import com.toedter.calendar.JCalendar;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -39,6 +44,7 @@ import javax.swing.table.TableModel;
 import javax.swing.text.html.parser.Parser;
 
 import org.h2.table.Table;
+import org.h2.tools.RunScript;
 
 import model.Projeto;
 import model.ProjetoTableModel;
@@ -82,25 +88,49 @@ public class TelaOperacional {
 						Connection con = DriverManager.getConnection(url);		
 						
 							Statement st = con.createStatement();
-							st.execute("CREATE TABLE PROJETOS(id_proj int primary key, nome_cli varchar(30), cnpj_cli varchar(30), dt_ini date, dt_ter date, status varchar(30), "
-									+ "vlr_proj float, qtdGer int, qtdCoord int, qtdArq int, qtdProgSr int, qtdProgPl int, qtdProgJr int, qtdDba int)");
+					/*
+					 * st.
+					 * execute("CREATE TABLE PROJETOS(id_proj int primary key, nome_cli varchar(30), cnpj_cli varchar(30), dt_ini date, dt_ter date, status varchar(30), "
+					 * +
+					 * "vlr_proj float, qtdGer int, qtdCoord int, qtdArq int, qtdProgSr int, qtdProgPl int, qtdProgJr int, qtdDba int)"
+					 * );
+					 * 
+					 * st.
+					 * execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
+					 * +
+					 * ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(191, 'Brastemp', '12.312.312/0001-23', '2008-09-06', '2009-05-06', 'Contratado', 4000, 1, 1, 1, 1, 1, 1, 1)"
+					 * ); st.
+					 * execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
+					 * +
+					 * ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(149, 'LG', '16.534.352/0001-89', '2010-09-06', '2018-05-06', 'Contratado', 5000, 1, 1, 1, 1, 1, 1, 1)"
+					 * ); st.
+					 * execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
+					 * +
+					 * ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(735, 'Honda', '14.313.090/0001-33', '2013-09-06', '2019-11-06', 'Contratado', 96000, 1, 1, 1, 1, 1, 1, 1)"
+					 * ); st.
+					 * execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
+					 * +
+					 * ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(443, 'Brastemp', '12.312.312/0001-23', '2016-03-16', '2021-08-21', 'Contratado', 134000, 1, 1, 1, 1, 1, 1, 1)"
+					 * ); st.
+					 * execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
+					 * +
+					 * ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(444, 'Brastemp', '12.312.312/0001-23', '2017-04-21', '2020-08-21', 'Em negociação', 242000, 1, 1, 1, 1, 1, 1, 1)"
+					 * ); st.
+					 * execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
+					 * +
+					 * ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(452, 'Amazon', '11.443.190/0001-81', '2018-02-10', '2025-09-20', 'Contratado', 13684000, 1, 1, 1, 1, 1, 1, 1)"
+					 * ); st.
+					 * execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
+					 * +
+					 * ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(978, 'Acer', '10.112.881/0001-99', '2017-02-21', '2023-11-30', 'Em negociação', 280000, 1, 1, 1, 1, 1, 1, 1)"
+					 * ); st.
+					 * execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
+					 * +
+					 * ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(732, 'Sony', '15.421.872/0002-34', '2015-07-26', '2020-04-20', 'Contratado', 376000, 1, 1, 1, 1, 1, 1, 1)"
+					 * );
+					 */
 							
-							st.execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
-									+ ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(191, 'Brastemp', '12.312.312/0001-23', '2008-09-06', '2009-05-06', 'Contratado', 4000, 1, 1, 1, 1, 1, 1, 1)");
-							st.execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
-									+ ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(149, 'LG', '16.534.352/0001-89', '2010-09-06', '2018-05-06', 'Contratado', 5000, 1, 1, 1, 1, 1, 1, 1)");
-							st.execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
-									+ ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(735, 'Honda', '14.313.090/0001-33', '2013-09-06', '2019-11-06', 'Contratado', 96000, 1, 1, 1, 1, 1, 1, 1)");
-							st.execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
-									+ ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(443, 'Brastemp', '12.312.312/0001-23', '2016-03-16', '2021-08-21', 'Contratado', 134000, 1, 1, 1, 1, 1, 1, 1)");
-							st.execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
-									+ ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(444, 'Brastemp', '12.312.312/0001-23', '2017-04-21', '2020-08-21', 'Em negociação', 242000, 1, 1, 1, 1, 1, 1, 1)");
-							st.execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
-									+ ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(452, 'Amazon', '11.443.190/0001-81', '2018-02-10', '2025-09-20', 'Contratado', 13684000, 1, 1, 1, 1, 1, 1, 1)");
-							st.execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
-									+ ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(978, 'Acer', '10.112.881/0001-99', '2017-02-21', '2023-11-30', 'Em negociação', 280000, 1, 1, 1, 1, 1, 1, 1)");
-							st.execute("INSERT INTO PROJETOS(id_proj, nome_cli, cnpj_cli, dt_ini, dt_ter, status, vlr_proj"
-									+ ", qtdGer, qtdCoord, qtdArq, qtdProgSr, qtdProgPl, qtdProgJr, qtdDba) VALUES(732, 'Sony', '15.421.872/0002-34', '2015-07-26', '2020-04-20', 'Contratado', 376000, 1, 1, 1, 1, 1, 1, 1)");
+							RunScript.execute(con, new FileReader("lib/create-tables.sql"));			
 							
 							
 							/*if(!(con.isClosed())) JOptionPane.showMessageDialog(null, "OK!");*/					
@@ -135,16 +165,20 @@ public class TelaOperacional {
 			ResultSet rs = st.executeQuery(query);
 		
 			while(rs.next()){
-				proj = new Projeto(String.valueOf(rs.getInt("id_proj")), rs.getString("nome_cli"), rs.getString("status"), rs.getString("cnpj_cli"),dateFormat.format(rs.getDate("dt_ini")), dateFormat.format(rs.getDate("dt_ter")), 
-					rs.getFloat("vlr_proj"), rs.getInt("qtdGer"), rs.getInt("qtdCoord"), rs.getInt("qtdArq"), rs.getInt("qtdProgSr"), 
-					rs.getInt("qtdProgPl"), rs.getInt("qtdProgJr"), rs.getInt("qtdDba"));
+				proj = new Projeto(rs.getInt("codProj"), rs.getString("nomeProj"),
+						rs.getInt("codCliente"), rs.getInt("codStatus"), rs.getInt("horasTotais"),
+						dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
+						rs.getDouble("custoProj"), rs.getString("obsProj"));
+				
 				arrayList.add(proj);
 			}
-		
+			
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, e);
-		}	
+		}
+		
 		return arrayList;
+		
 	}
 	/**
 	 * Initialize the contents of the frame.
