@@ -402,8 +402,6 @@ public class TelaPesquisarProjeto {
 				if (!(table.isFocusable())) table.getSelectionModel().clearSelection();				
 			}
 		});
-
-		
 	}
 	
 	public ArrayList<Projeto> listaProjeto(){
