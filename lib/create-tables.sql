@@ -50,12 +50,12 @@ CREATE TABLE CONTRATOS(
 	FOREIGN KEY (CodProj) REFERENCES PROJETOS(CodProj)
 );
 -- Popular Tabela CLIENTES
-INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000001','Brastemp','12312312000123');
-INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000002','LG','16534352000189');
-INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000003','Honda','14313090000133');
-INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000004','Amazon','11443190000181');
-INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000005','Acer','10112881000199');
-INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000006','Sony','15421872000234');
+INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000001','Brastemp','12.312.312/0001-23');
+INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000002','LG','16.534.352/0001-89');
+INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000003','Honda','14.313.090/0001-33');
+INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000004','Amazon','11.443.190/0001-81');
+INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000005','Acer','10.112.881/0001-99');
+INSERT INTO CLIENTES(CodCliente, NomeCliente, CnpjCliente) VALUES('00000006','Sony','15.421.872/0002-34');
 -- Popular Tabela STATUS
 INSERT INTO STATUS(CodStatus, ObsStatus, SubStatus) VALUES('1','Em Negociacao', 'Em Negociacao');
 INSERT INTO STATUS(CodStatus, ObsStatus, SubStatus) VALUES('2','Contratado', 'Em Desenvolvimento');

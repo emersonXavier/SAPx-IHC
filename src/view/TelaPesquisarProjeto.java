@@ -316,7 +316,7 @@ public class TelaPesquisarProjeto {
 		cmbPesquisa.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		
 		
-		cmbPesquisa.setModel(new DefaultComboBoxModel(new String[] {"Em negocia\u00E7\u00E3o", "Contratado"}));
+		cmbPesquisa.setModel(new DefaultComboBoxModel(new String[] {"Em Negociacao", "Contratado", "Removido"}));
 		cmbPesquisa.setBounds(190, 84, 190, 20);
 		frmPesquisa.getContentPane().add(cmbPesquisa);
 		

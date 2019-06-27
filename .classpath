@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="lib/hsqldb-2.4.1/hsqldb/lib/hsqldb.jar"/>
 	<classpathentry kind="lib" path="lib/hsqldb-2.4.1/hsqldb/lib/sqltool.jar"/>
 	<classpathentry kind="lib" path="lib/h2-1.4.197.jar"/>
+	<classpathentry kind="lib" path="lib/itextpdf-5.5.9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
