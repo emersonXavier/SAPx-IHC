@@ -368,8 +368,8 @@ public class TelaAdicionarProjeto {
 							 * st.execute("INSERT INTO CLIENTES (NomeCliente, CnpjCliente) VALUES " + "('" +
 							 * txtNomeCliente.getText() + "', '" + txtCnpj.getText() + "')");
 							 */
-							st.execute(
-									"INSERT INTO PROJETOS(NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) "
+							
+							String sql =	"INSERT INTO PROJETOS(NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) "
 											+ "VALUES('"
 											+ cmbCliente.getSelectedItem().toString() + "', "
 											+ "(SELECT A.CodCliente FROM CLIENTES A WHERE NomeCliente='" + cmbCliente.getSelectedItem().toString() +"'), "
@@ -378,7 +378,8 @@ public class TelaAdicionarProjeto {
 											+ dateFormat.format(dtInicio.getDate()) + "', '"
 											+ dateFormat.format(dtTermino.getDate()) + "', "											
 											+ Integer.parseInt(txtVlrProj.getText()) + ", '"
-											+ txtObs.getText() + "')");
+											+ txtObs.getText() + "')";
+							st.execute(sql);
 											
 											/*+ Integer.parseInt(txtQtdCoord.getText()) + ", "
 											+ Integer.parseInt(txtQtdArq.getText()) + ", "
@@ -388,7 +389,7 @@ public class TelaAdicionarProjeto {
 											+ Integer.parseInt(txtQtdDba.getText()) +*/ 
 
 							
-							ResultSet rs = st.executeQuery("SELECT * FROM PROJETOS");
+/*							ResultSet rs = st.executeQuery("SELECT * FROM PROJETOS");
 							
 							while(rs.next()) {
 								System.out.println(rs.getInt("CodProj") + "\t" + rs.getString("NomeProj") + "\t" +
@@ -398,7 +399,11 @@ public class TelaAdicionarProjeto {
 								Projeto proj = new Projeto(rs.getInt("CodProj"));
 							}
 							
+							rs = st.executeQuery("SELECT TOP 1 A.CodProj FROM PROJETOS A 	ORDER BY A.CodProj DESC");
 							
+							while(rs.next()) {
+								System.out.println(rs.getInt("CodProj"));
+							}*/
 							
 							JOptionPane.showMessageDialog(null, "Projeto adicionado com sucesso!");
 							
