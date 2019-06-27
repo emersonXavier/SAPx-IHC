@@ -76,13 +76,6 @@ public class TelaAdicionarProjeto {
 	static String url= "jdbc:h2:mem:DB_PROJ;DB_CLOSE_DELAY=-1;";
 	Connection con;
 	Statement st;
-	private JTextField txtQtdGerente;
-	private JTextField txtQtdCoord;
-	private JTextField txtQtdArq;
-	private JTextField txtQtdProgSr;
-	private JTextField txtQtdProgPl;
-	private JTextField txtQtdProgJr;
-	private JTextField txtQtdDba;
 	private MaskFormatter mskCNPJ;
 
 	/**
@@ -120,16 +113,13 @@ public class TelaAdicionarProjeto {
 		frmAddProj = new JFrame();
 		frmAddProj.getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 14));
 		frmAddProj.setTitle("SAPx");
-		frmAddProj.setBounds(100, 100, 1030, 428);
+		frmAddProj.setBounds(100, 100, 530, 428);
 		frmAddProj.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmAddProj.getContentPane().setLayout(null);
 		
 		ArrayList<Cliente> arrayList = listaCliente();
 		
 		mskCNPJ = new MaskFormatter("##.###.###/####-##");
-		JFormattedTextField txtCnpj = new JFormattedTextField(mskCNPJ);
-		txtCnpj.setEnabled(false);
-		txtCnpj.setFont(new Font("Tahoma", Font.PLAIN, 14));
 
 		JLabel lblNomeCliente = new JLabel("Nome Cliente:");
 		lblNomeCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -138,66 +128,57 @@ public class TelaAdicionarProjeto {
 
 		JLabel lblDataIncio = new JLabel("Data in\u00EDcio:");
 		lblDataIncio.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDataIncio.setBounds(10, 155, 125, 14);
+		lblDataIncio.setBounds(10, 133, 125, 14);
 		frmAddProj.getContentPane().add(lblDataIncio);
 
 		JLabel lblDataTrmino = new JLabel("Data t\u00E9rmino:");
 		lblDataTrmino.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDataTrmino.setBounds(10, 181, 125, 14);
+		lblDataTrmino.setBounds(10, 159, 125, 14);
 		frmAddProj.getContentPane().add(lblDataTrmino);
 
 		//ANTIGO LOCAL DO BOTÃO
 
 		JLabel status = new JLabel("Status:");
 		status.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		status.setBounds(10, 207, 125, 14);
+		status.setBounds(10, 185, 125, 14);
 		frmAddProj.getContentPane().add(status);
 
 		JLabel lblNProjeto = new JLabel("Horas Totais:");
 		lblNProjeto.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNProjeto.setBounds(10, 233, 125, 14);
+		lblNProjeto.setBounds(10, 211, 125, 14);
 		frmAddProj.getContentPane().add(lblNProjeto);
 
 		txtHoras = new JTextField();
 		txtHoras.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtHoras.setBounds(145, 233, 153, 20);
+		txtHoras.setBounds(145, 211, 153, 20);
 		txtHoras.setColumns(10);
 		frmAddProj.getContentPane().add(txtHoras);
 
 		JLabel lblValor = new JLabel("Valor do projeto:");
 		lblValor.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblValor.setBounds(10, 259, 125, 20);
+		lblValor.setBounds(10, 237, 125, 20);
 		frmAddProj.getContentPane().add(lblValor);
 
 		txtVlrProj = new JTextField();
 		txtVlrProj.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtVlrProj.setBounds(145, 259, 153, 20);
+		txtVlrProj.setBounds(145, 237, 153, 20);
 		txtVlrProj.setColumns(10);
 		frmAddProj.getContentPane().add(txtVlrProj);
 
 		dtInicio = new JDateChooser();
-		dtInicio.setBounds(145, 155, 153, 20);
+		dtInicio.setBounds(145, 133, 153, 20);
 		frmAddProj.getContentPane().add(dtInicio);
 
 		dtTermino = new JDateChooser();
-		dtTermino.setBounds(145, 181, 153, 20);
+		dtTermino.setBounds(145, 159, 153, 20);
 		frmAddProj.getContentPane().add(dtTermino);
 
 		cmbStatus = new JComboBox();
 		cmbStatus.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		cmbStatus.setBounds(145, 207, 153, 20);
-		cmbStatus.setModel(new DefaultComboBoxModel(new String[] { "Em Negociacao", "Contratado" }));
+		cmbStatus.setBounds(145, 185, 153, 20);
+		cmbStatus.setModel(new DefaultComboBoxModel(new String[] { "Em Negociacao", "Contratado", "Removido"}));
 		cmbStatus.setSelectedIndex(0);
 		frmAddProj.getContentPane().add(cmbStatus);
-
-		JLabel lblCnpj = new JLabel("CNPJ Cliente:");
-		lblCnpj.setEnabled(false);
-		lblCnpj.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCnpj.setBounds(10, 129, 125, 14);
-		frmAddProj.getContentPane().add(lblCnpj);
-
-		txtCnpj.setBounds(145, 129, 153, 20);
-		frmAddProj.getContentPane().add(txtCnpj);
 		/*
 		 * JLabel lblCpf = new JLabel("CPF Cliente:"); lblCpf.setBounds(10, 129, 80,
 		 * 14); lblCpf.setVisible(false); frmAddProj.getContentPane().add(lblCpf);
@@ -214,118 +195,27 @@ public class TelaAdicionarProjeto {
 				frmAddProj.dispose();
 			}
 		});
-		btnCancelar.setBounds(330, 319, 170, 42);
+		btnCancelar.setBounds(310, 319, 170, 42);
 		frmAddProj.getContentPane().add(btnCancelar);
 
 		JLabel lblAdicionarProjeto = new JLabel("Incluir Projeto");
 		lblAdicionarProjeto.setHorizontalAlignment(SwingConstants.CENTER);
 		lblAdicionarProjeto.setFont(new Font("Tahoma", Font.PLAIN, 24));
-		lblAdicionarProjeto.setBounds(180, 11, 264, 42);
+		lblAdicionarProjeto.setBounds(130, 11, 264, 42);
 		frmAddProj.getContentPane().add(lblAdicionarProjeto);
-
-		JLabel lblNDeProgramadores = new JLabel("Gerentes:");
-		lblNDeProgramadores.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblNDeProgramadores.setBounds(420, 103, 61, 14);
-		frmAddProj.getContentPane().add(lblNDeProgramadores);
-
-		JLabel lblArquitetos = new JLabel("Arquitetos:");
-		lblArquitetos.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblArquitetos.setBounds(420, 155, 80, 14);
-		frmAddProj.getContentPane().add(lblArquitetos);
-
-		JLabel lblProgramadoresSnior = new JLabel("Progr. S\u00EAnior:");
-		lblProgramadoresSnior.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblProgramadoresSnior.setBounds(420, 181, 80, 14);
-		frmAddProj.getContentPane().add(lblProgramadoresSnior);
-
-		JLabel lblProgrPleno = new JLabel("Progr. Pleno:");
-		lblProgrPleno.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblProgrPleno.setBounds(420, 207, 80, 14);
-		frmAddProj.getContentPane().add(lblProgrPleno);
-
-		JLabel lblProgrJnior = new JLabel("Progr. Jr:");
-		lblProgrJnior.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblProgrJnior.setBounds(420, 233, 80, 14);
-		frmAddProj.getContentPane().add(lblProgrJnior);
-
-		JLabel lblDba = new JLabel("DBA:");
-		lblDba.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblDba.setBounds(420, 259, 80, 14);
-		frmAddProj.getContentPane().add(lblDba);
-
-		JLabel lblCoordenadores = new JLabel("Coordenadores:");
-		lblCoordenadores.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblCoordenadores.setBounds(420, 129, 99, 14);
-		frmAddProj.getContentPane().add(lblCoordenadores);
-
-		txtQtdGerente = new JTextField();
-		txtQtdGerente.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtQtdGerente.setBounds(550, 103, 40, 20);
-		frmAddProj.getContentPane().add(txtQtdGerente);
-		txtQtdGerente.setColumns(10);
-
-		txtQtdCoord = new JTextField();
-		txtQtdCoord.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtQtdCoord.setColumns(10);
-		txtQtdCoord.setBounds(550, 129, 40, 20);
-		frmAddProj.getContentPane().add(txtQtdCoord);
-
-		txtQtdArq = new JTextField();
-		txtQtdArq.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtQtdArq.setColumns(10);
-		txtQtdArq.setBounds(550, 155, 40, 20);
-		frmAddProj.getContentPane().add(txtQtdArq);
-
-		txtQtdProgSr = new JTextField();
-		txtQtdProgSr.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtQtdProgSr.setColumns(10);
-		txtQtdProgSr.setBounds(550, 181, 40, 20);
-		frmAddProj.getContentPane().add(txtQtdProgSr);
-
-		txtQtdProgPl = new JTextField();
-		txtQtdProgPl.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtQtdProgPl.setColumns(10);
-		txtQtdProgPl.setBounds(550, 207, 40, 20);
-		frmAddProj.getContentPane().add(txtQtdProgPl);
-
-		txtQtdProgJr = new JTextField();
-		txtQtdProgJr.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtQtdProgJr.setColumns(10);
-		txtQtdProgJr.setBounds(550, 233, 40, 20);
-		frmAddProj.getContentPane().add(txtQtdProgJr);
-
-		txtQtdDba = new JTextField();
-		txtQtdDba.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtQtdDba.setColumns(10);
-		txtQtdDba.setBounds(550, 259, 40, 20);
-		frmAddProj.getContentPane().add(txtQtdDba);
 
 		JLabel lblDadosDoCliente = new JLabel("Dados");
 		lblDadosDoCliente.setFont(new Font("Tahoma", Font.PLAIN, 18));
 		lblDadosDoCliente.setBounds(10, 70, 170, 22);
 		frmAddProj.getContentPane().add(lblDadosDoCliente);
-
-		JLabel lblHoras = new JLabel("Horas");
-		lblHoras.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblHoras.setBounds(420, 70, 125, 22);
-		frmAddProj.getContentPane().add(lblHoras);
-
-		JButton btnAdicionarCargo = new JButton("Adicionar cargo");
-		btnAdicionarCargo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-
-			}
-		});
-		btnAdicionarCargo.setBounds(510, 319, 153, 42);
-		frmAddProj.getContentPane().add(btnAdicionarCargo);
 		
 		JLabel lblComentriosobservaes = new JLabel("Observa\u00E7\u00F5es");
 		lblComentriosobservaes.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		lblComentriosobservaes.setBounds(654, 77, 197, 22);
+		lblComentriosobservaes.setBounds(330, 73, 197, 22);
 		frmAddProj.getContentPane().add(lblComentriosobservaes);
 		
 		JTextArea txtObs = new JTextArea();
-		txtObs.setBounds(654, 100, 197, 183);
+		txtObs.setBounds(330, 96, 163, 161);
 		frmAddProj.getContentPane().add(txtObs);
 
 		JComboBox cmbCliente = new JComboBox();
@@ -335,7 +225,7 @@ public class TelaAdicionarProjeto {
 		frmAddProj.getContentPane().add(cmbCliente);
 
 		JButton btnIncluirProjeto = new JButton("Incluir Projeto");
-		btnIncluirProjeto.setBounds(128, 319, 170, 42);
+		btnIncluirProjeto.setBounds(40, 319, 170, 42);
 		btnIncluirProjeto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 

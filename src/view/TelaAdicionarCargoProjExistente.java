@@ -24,12 +24,12 @@ import java.awt.font.NumericShaper;
 import java.awt.event.ActionEvent;
 import java.awt.Font;
 
-public class TelaAdicionarCargo {
+public class TelaAdicionarCargoProjExistente {
 
 	JFrame frame;
 	private JTextField txtQtdCargo;
 	private JTextField txtHorasCargo;
-	public int idProj;
+	int idProj;
 	Connection con;
 	Statement st;
 	Cargo cargo;
@@ -43,7 +43,7 @@ public class TelaAdicionarCargo {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					TelaAdicionarCargo window = new TelaAdicionarCargo();
+					TelaAdicionarCargoProjExistente window = new TelaAdicionarCargoProjExistente();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -55,10 +55,11 @@ public class TelaAdicionarCargo {
 	/**
 	 * Create the application.
 	 */
-	public TelaAdicionarCargo() {
+	public TelaAdicionarCargoProjExistente() {
 		initialize();
 	}
-	public TelaAdicionarCargo(Projeto projTela) {
+	public TelaAdicionarCargoProjExistente(int proj) {
+		idProj = proj;
 		initialize();	
 		
 	}	
@@ -73,7 +74,7 @@ public class TelaAdicionarCargo {
 		frame.getContentPane().setLayout(null);
 		
 		ArrayList<Cargo> arrayList = listaCargos();
-		idProj = NumeroProj();
+		
 		
 		JComboBox cmbCargos = new JComboBox();
 		cmbCargos.setBounds(89, 86, 160, 20);

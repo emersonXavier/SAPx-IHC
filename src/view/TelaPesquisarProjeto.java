@@ -64,6 +64,7 @@ public class TelaPesquisarProjeto {
 	JLabel lblCmbPesquisa = new JLabel("Dado para Pesquisa:");
 	JLabel lblDataTrmino = new JLabel("Data máxima:");
 	String arg1, arg2, dadoPesquisa, dadoPesquisa2;
+	JButton btnAddCargo = new JButton("Adicionar Cargos");
 
 	/**
 	 * Launch the application.
@@ -220,7 +221,7 @@ public class TelaPesquisarProjeto {
 		txtDataPesquisaIni.setBounds(190, 84, 190, 20);
 		txtDataPesquisaIni.setVisible(false);
 		frmPesquisa.getContentPane().add(txtDataPesquisaIni);
-		txtDataPesquisaTer.setBounds(500, 84, 190, 20);
+		txtDataPesquisaTer.setBounds(500, 84, 170, 20);
 		txtDataPesquisaTer.setVisible(false);
 		frmPesquisa.getContentPane().add(txtDataPesquisaTer);
 		
@@ -242,6 +243,7 @@ public class TelaPesquisarProjeto {
 		});
 		frmPesquisa.getContentPane().add(btnAlterar);
 		btnAlterar.setEnabled(false);
+		
 		
 		JButton btnExcluir = new JButton("Excluir Projeto");
 		btnExcluir.setFont(new Font("Tahoma", Font.PLAIN, 14));
@@ -330,10 +332,50 @@ public class TelaPesquisarProjeto {
 				mostraProjeto();
 				btnExcluir.setEnabled(false);
 				btnAlterar.setEnabled(false);
+				btnAddCargo.setEnabled(false);
+				
 			}
 		});
-		btnResetTable.setBounds(880, 16, 89, 23);
+		btnResetTable.setBounds(834, 16, 135, 23);
 		frmPesquisa.getContentPane().add(btnResetTable);
+		
+		JButton btnInserirCliente = new JButton("Inserir Cliente");
+		btnInserirCliente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TelaAdicionarCliente telaAddCliente;
+				try {
+					telaAddCliente = new TelaAdicionarCliente();
+					telaAddCliente.main(null);
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				
+			}
+		});
+		btnInserirCliente.setBounds(834, 85, 135, 23);
+		frmPesquisa.getContentPane().add(btnInserirCliente);
+		
+		btnAddCargo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TelaAdicionarCargoProjExistente telaAddCargo = new TelaAdicionarCargoProjExistente(Integer.parseInt(table.getValueAt((table.getSelectedRow()), 0).toString()));
+				
+				telaAddCargo.frame.setVisible(true);
+			}
+		});
+		btnAddCargo.setBounds(689, 85, 135, 23);
+		frmPesquisa.getContentPane().add(btnAddCargo);
+		btnAddCargo.setEnabled(false);
+		
+		JButton btnNewButton = new JButton("Add cargos sistema");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				TelaCargoNovo telaCargoSistema = new TelaCargoNovo();
+				TelaCargoNovo.main(null);
+			}
+		});
+		btnNewButton.setBounds(689, 16, 135, 23);
+		frmPesquisa.getContentPane().add(btnNewButton);
 		
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			
@@ -342,6 +384,7 @@ public class TelaPesquisarProjeto {
 				// TODO Auto-generated method stub
 				btnExcluir.setEnabled(true);
 				btnAlterar.setEnabled(true);
+				btnAddCargo.setEnabled(true);
 			}
 		});
 		table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -368,7 +411,7 @@ public class TelaPesquisarProjeto {
 		//String query = "SELECT * FROM PROJETOS";
 		String query = "SELECT A.CodProj, B.NomeCliente, B.CnpjCliente, C.ObsStatus, A.HorasTotais, A.DataIni, A.DataFim, A.CustoProj, A.ObsProj" +
 		" FROM PROJETOS A, CLIENTES B, STATUS C" +
-		" WHERE (A.CodCliente=B.CodCliente) AND (A.CodStatus=C.CodStatus)";
+		" WHERE (A.CodCliente=B.CodCliente) AND (A.CodStatus=C.CodStatus) ORDER BY A.CodProj";
 		
 		ResultSet rs = st.executeQuery(query);
 		
