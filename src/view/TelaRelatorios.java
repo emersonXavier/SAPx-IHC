@@ -7,20 +7,35 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.LineNumberInputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
+
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.log.Level;
+import com.itextpdf.text.log.Logger;
+import com.itextpdf.text.pdf.PdfWriter;
 
 import model.Projeto;
 
@@ -28,6 +43,7 @@ import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 
+import view.TelaPesquisarProjeto;
 import view.TelaPesquisarProjeto;
 
 public class TelaRelatorios {
@@ -118,6 +134,360 @@ public class TelaRelatorios {
 		JButton btnNewButton = new JButton("Gerar relat\u00F3rio");
 		btnNewButton.setBounds(94, 124, 151, 37);
 		frmRelat.getContentPane().add(btnNewButton);
+		
+		btnNewButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
+				if (comboBox.getSelectedIndex() == 1) {
+				
+				//instancia de novo documento pdf
+				Document relatorio = new Document();
+				
+				//data atual
+				DateFormat dataformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+				Date dataatual = new Date();
+				
+				//gera relatorio
+				try{
+					PdfWriter.getInstance(relatorio, new FileOutputStream("relatorio1.pdf"));
+					relatorio.open();
+					
+					Paragraph cabecalho = new Paragraph("Relatório SAPX - Tempo de conclusão de projetos ");
+					cabecalho.setAlignment(Element.ALIGN_CENTER);
+					
+					Paragraph datahora = new Paragraph(dataformat.format(dataatual));
+					datahora.setAlignment(Element.ALIGN_RIGHT);
+					
+					relatorio.add(cabecalho);
+					relatorio.add(datahora);
+					relatorio.add(new Paragraph(""));
+					String queryproj = "SELECT * FROM PROJETOS";
+					Statement stmt = null;
+					
+					
+					
+					try {
+				        stmt = con.createStatement();
+				        ResultSet rs = stmt.executeQuery(queryproj);
+				        while (rs.next()) {
+				            
+				        	int coditem = rs.getInt("codProj");
+				        	
+				        	String nomeitem = rs.getString("nomeProj");
+				        	
+				        	int horasitem =  rs.getInt("horasTotais");
+				        	
+				        	String item = "Codigo: " + coditem +
+				        			"              Nome: " + nomeitem + "              Horas:" + horasitem;
+				            relatorio.add(new Paragraph(item));
+				        }
+				    } catch (SQLException e1 ) {
+				    	JOptionPane.showMessageDialog(null, e1);
+				    } 
+					
+					
+				} catch (DocumentException | FileNotFoundException ex) {
+					JOptionPane.showMessageDialog(null, ex);
+				} finally {
+					relatorio.close();
+				}
+				
+				//exibe relatorio
+		        try {
+		            Desktop.getDesktop().open(new File("relatorio1.pdf"));
+		        } catch (IOException ex) {
+					JOptionPane.showMessageDialog(null, ex);
+				}
+			}
+				
+				
+				else if (comboBox.getSelectedIndex() == 2) {
+					
+					//instancia de novo documento pdf
+					Document relatorio = new Document();
+					 
+					//data atual
+					DateFormat dataformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+					Date dataatual = new Date();
+					
+					//gera relatorio
+					try{
+						PdfWriter.getInstance(relatorio, new FileOutputStream("relatorio2.pdf"));
+						relatorio.open();
+						
+						Paragraph cabecalho = new Paragraph("Relatório SAPX - Lista de funções por projetos ");
+						cabecalho.setAlignment(Element.ALIGN_CENTER);
+						
+						Paragraph datahora = new Paragraph(dataformat.format(dataatual));
+						datahora.setAlignment(Element.ALIGN_RIGHT);
+						 
+						relatorio.add(cabecalho);
+						relatorio.add(datahora);
+						relatorio.add(new Paragraph(""));
+						String queryproj = "SELECT * FROM PLANEJARECURSOS P, CARGOS C, PROJETOS R WHERE P.CODCARGO = C.CODCARGO AND R.CODPROJ = P.CODPROJ AND P.CODPROJ = " + cmbBoxRelatorio.getSelectedItem();
+						Statement stmt = null;
+						
+						try {
+					        stmt = con.createStatement();
+					        ResultSet rs = stmt.executeQuery(queryproj);
+					        while (rs.next()) {
+					            
+					        	int coditem = rs.getInt("codProj");			        	
+					        	String projitem = rs.getString("nomeProj");
+					        	String cargoitem = rs.getString("nomeCargo");
+					        	
+					        	
+					        	String item = "Código do Projeto: " + coditem + "              Projeto: " + projitem + "                 Função: " + cargoitem;
+					            relatorio.add(new Paragraph(item));
+					        }
+					    } catch (SQLException e1 ) {
+					    	JOptionPane.showMessageDialog(null, "Nenhum projeto selecionado, gerando relatorio em branco");
+					    } 
+						
+					} catch (DocumentException | FileNotFoundException ex) {
+						JOptionPane.showMessageDialog(null, ex);
+					} finally {
+						relatorio.close();
+					}
+					
+					//exibe relatorio
+			        try {
+			            Desktop.getDesktop().open(new File("relatorio2.pdf"));
+			        } catch (IOException ex) {
+						JOptionPane.showMessageDialog(null, ex);
+					}
+				}
+				
+				
+				
+				
+				else if (comboBox.getSelectedIndex() == 3) {
+					
+					//instancia de novo documento pdf
+					Document relatorio = new Document();
+					
+					//data atual
+					DateFormat dataformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+					Date dataatual = new Date();
+					
+					//gera relatorio
+					try{
+						PdfWriter.getInstance(relatorio, new FileOutputStream("relatorio3.pdf"));
+						relatorio.open();
+						
+						Paragraph cabecalho = new Paragraph("Relatório SAPX - Número de projetos iniciados por período");
+						cabecalho.setAlignment(Element.ALIGN_CENTER);
+						
+						Paragraph datahora = new Paragraph(dataformat.format(dataatual));
+						datahora.setAlignment(Element.ALIGN_RIGHT);
+						
+						relatorio.add(cabecalho);
+						relatorio.add(datahora);
+						relatorio.add(new Paragraph(""));
+						String queryproj = "SELECT * FROM PROJETOS";
+						Statement stmt = null;
+						
+						
+
+						
+						
+					} catch (DocumentException | FileNotFoundException ex) {
+						JOptionPane.showMessageDialog(null, ex);
+					} finally {
+						relatorio.close();
+					}
+					
+					//exibe relatorio
+			        try {
+			            Desktop.getDesktop().open(new File("relatorio3.pdf"));
+			        } catch (IOException ex) {
+						JOptionPane.showMessageDialog(null, ex);
+					}
+				}
+				
+				
+				else if (comboBox.getSelectedIndex() == 4) {
+					
+					//instancia de novo documento pdf
+					Document relatorio = new Document();
+					
+					//data atual
+					DateFormat dataformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+					Date dataatual = new Date();
+					
+					//gera relatorio
+					try{
+						PdfWriter.getInstance(relatorio, new FileOutputStream("relatorio4.pdf"));
+						relatorio.open();
+						
+						Paragraph cabecalho = new Paragraph("Relatório SAPX - Tempo estimado do projeto em relação ao tempo médio");
+						cabecalho.setAlignment(Element.ALIGN_CENTER);
+						
+						Paragraph datahora = new Paragraph(dataformat.format(dataatual));
+						datahora.setAlignment(Element.ALIGN_RIGHT);
+						
+						relatorio.add(cabecalho);
+						relatorio.add(datahora);
+						relatorio.add(new Paragraph(""));
+						String queryproj = "SELECT * FROM PROJETOS";
+						Statement stmt = null;
+						
+
+					} catch (DocumentException | FileNotFoundException ex) {
+						JOptionPane.showMessageDialog(null, ex);
+					} finally {
+						relatorio.close();
+					}
+					
+					//exibe relatorio
+			        try {
+			            Desktop.getDesktop().open(new File("relatorio4.pdf"));
+			        } catch (IOException ex) {
+						JOptionPane.showMessageDialog(null, ex);
+					}
+				}
+				
+
+				
+				
+				
+				else if (comboBox.getSelectedIndex() == 5) {
+					
+					//instancia de novo documento pdf
+					Document relatorio = new Document();
+					
+					//data atual
+					DateFormat dataformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+					Date dataatual = new Date();
+					
+					//gera relatorio
+					try{
+						PdfWriter.getInstance(relatorio, new FileOutputStream("relatorio5.pdf"));
+						relatorio.open();
+						
+						Paragraph cabecalho = new Paragraph("Relatório SAPX - Situação atual do projeto, em relação ao acordado");
+						cabecalho.setAlignment(Element.ALIGN_CENTER);
+						
+						Paragraph datahora = new Paragraph(dataformat.format(dataatual));
+						datahora.setAlignment(Element.ALIGN_RIGHT);
+						
+						relatorio.add(cabecalho);
+						relatorio.add(datahora);
+						relatorio.add(new Paragraph(""));
+						String queryproj = "SELECT * FROM PROJETOS";
+						Statement stmt = null;
+						
+
+						
+						
+					} catch (DocumentException | FileNotFoundException ex) {
+						JOptionPane.showMessageDialog(null, ex);
+					} finally {
+						relatorio.close();
+					}
+					
+					//exibe relatorio
+			        try {
+			            Desktop.getDesktop().open(new File("relatorio5.pdf"));
+			        } catch (IOException ex) {
+						JOptionPane.showMessageDialog(null, ex);
+					}
+				}
+
+				
+				else if (comboBox.getSelectedIndex() == 6) {
+					
+					//instancia de novo documento pdf
+					Document relatorio = new Document();
+					
+					//data atual
+					DateFormat dataformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+					Date dataatual = new Date();
+					
+					//gera relatorio
+					try{
+						PdfWriter.getInstance(relatorio, new FileOutputStream("relatorio6.pdf"));
+						relatorio.open();
+						
+						Paragraph cabecalho = new Paragraph("Relatório SAPX - Apontamento de horas planejadas para o projeto por função");
+						cabecalho.setAlignment(Element.ALIGN_CENTER);
+						
+						Paragraph datahora = new Paragraph(dataformat.format(dataatual));
+						datahora.setAlignment(Element.ALIGN_RIGHT);
+						
+						relatorio.add(cabecalho);
+						relatorio.add(datahora);
+						relatorio.add(new Paragraph(""));
+						String queryproj = "SELECT * FROM PROJETOS";
+						Statement stmt = null;
+						
+
+						
+						
+					} catch (DocumentException | FileNotFoundException ex) {
+						JOptionPane.showMessageDialog(null, ex);
+					} finally {
+						relatorio.close();
+					}
+					
+					//exibe relatorio
+			        try {
+			            Desktop.getDesktop().open(new File("relatorio6.pdf"));
+			        } catch (IOException ex) {
+						JOptionPane.showMessageDialog(null, ex);
+					}
+				}				
+				
+				
+				else if (comboBox.getSelectedIndex() == 7) {
+					
+					//instancia de novo documento pdf
+					Document relatorio = new Document();
+					
+					//data atual
+					DateFormat dataformat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+					Date dataatual = new Date();
+					
+					//gera relatorio
+					try{
+						PdfWriter.getInstance(relatorio, new FileOutputStream("relatorio7.pdf"));
+						relatorio.open();
+						
+						Paragraph cabecalho = new Paragraph("Relatório SAPX - Lista de funções planejadas para o projeto");
+						cabecalho.setAlignment(Element.ALIGN_CENTER);
+						
+						Paragraph datahora = new Paragraph(dataformat.format(dataatual));
+						datahora.setAlignment(Element.ALIGN_RIGHT);
+						
+						relatorio.add(cabecalho);
+						relatorio.add(datahora);
+						relatorio.add(new Paragraph(""));
+						String queryproj = "SELECT * FROM PROJETOS";
+						Statement stmt = null;
+						
+
+						
+						
+					} catch (DocumentException | FileNotFoundException ex) {
+						JOptionPane.showMessageDialog(null, ex);
+					} finally {
+						relatorio.close();
+					}
+					
+					//exibe relatorio
+			        try {
+			            Desktop.getDesktop().open(new File("relatorio7.pdf"));
+			        } catch (IOException ex) {
+						JOptionPane.showMessageDialog(null, ex);
+					}
+				}				
+				
+				
+			}
+		});
 		
 		
 		cmbBoxRelatorio.setEnabled(false);
