@@ -45,9 +45,7 @@ public class TelaAlterarProjeto {
 
 	JFrame frmAlterProj;
 	JTextField txtCodProj;
-	//JTextField txtCnpj;
 	JTextField txtValor;
-	static //TelaPesquisarProjeto view;
 	Projeto projParalelo;
 	private JTextField txtNomeProj;
 	JDateChooser dtTermino = new JDateChooser();
@@ -146,13 +144,6 @@ public class TelaAlterarProjeto {
 		frmAlterProj.getContentPane().add(txtCodProj);
 		txtCodProj.setColumns(10);
 		
-/*		txtCnpj = new JTextField();
-		txtCnpj.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		txtCnpj.setEditable(false);
-		txtCnpj.setColumns(10);
-		txtCnpj.setBounds(120, 155, 153, 20);
-		frmAlterProj.getContentPane().add(txtCnpj);
-*/
 		txtNomeCliente.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		txtNomeCliente.setEditable(false);
 		txtNomeCliente.setColumns(10);

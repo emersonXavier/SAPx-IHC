@@ -408,7 +408,6 @@ public class TelaPesquisarProjeto {
 		con = DriverManager.getConnection(url);	
 		st = con.createStatement();
 		
-		//String query = "SELECT * FROM PROJETOS";
 		String query = "SELECT A.CodProj, B.NomeCliente, B.CnpjCliente, C.ObsStatus, A.HorasTotais, A.DataIni, A.DataFim, A.CustoProj, A.ObsProj" +
 		" FROM PROJETOS A, CLIENTES B, STATUS C" +
 		" WHERE (A.CodCliente=B.CodCliente) AND (A.CodStatus=C.CodStatus) ORDER BY A.CodProj";
@@ -477,8 +476,6 @@ public class TelaPesquisarProjeto {
 			
 			deletedRows = st.executeUpdate(query);
 			
-			//ResultSet rs = st.execute(query);
-			
 			apagaTabela();
 			mostraProjeto();
 			
@@ -503,7 +500,7 @@ public class TelaPesquisarProjeto {
 			
 			if (arg2==null) {
 			
-				//query = "SELECT * FROM PROJETOS WHERE " + arg1 + "= '" + dadoPesquisa + "'";
+				
 			
 				query = "SELECT A.CodProj, B.NomeCliente, B.CnpjCliente, C.ObsStatus, A.HorasTotais, A.DataIni, A.DataFim, A.CustoProj, A.ObsProj" +
 				" FROM PROJETOS A, CLIENTES B, STATUS C" +
@@ -511,7 +508,6 @@ public class TelaPesquisarProjeto {
 				
 			} else {
 				
-				//query = 	"SELECT * FROM PROJETOS WHERE " + arg1 + ">= '" + dadoPesquisa + "' AND " + arg2 + " <= '"	+ dadoPesquisa2 + "'";
 				query = "SELECT A.CodProj, B.NomeCliente, B.CnpjCliente, C.ObsStatus, A.HorasTotais, A.DataIni, A.DataFim, A.CustoProj, A.ObsProj" +
 						" FROM PROJETOS A, CLIENTES B, STATUS C" +
 						" WHERE (A.CodCliente=B.CodCliente) AND (A.CodStatus=C.CodStatus) AND " 

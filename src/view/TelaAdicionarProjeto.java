@@ -179,15 +179,6 @@ public class TelaAdicionarProjeto {
 		cmbStatus.setModel(new DefaultComboBoxModel(new String[] { "Em Negociacao", "Contratado", "Removido"}));
 		cmbStatus.setSelectedIndex(0);
 		frmAddProj.getContentPane().add(cmbStatus);
-		/*
-		 * JLabel lblCpf = new JLabel("CPF Cliente:"); lblCpf.setBounds(10, 129, 80,
-		 * 14); lblCpf.setVisible(false); frmAddProj.getContentPane().add(lblCpf);
-		 * 
-		 * 
-		 * mskCPF = new MaskFormatter("###.###.###-##"); JFormattedTextField txtCpf =
-		 * new JFormattedTextField(mskCPF); txtCpf.setBounds(120, 129, 153, 20);
-		 * frmAddProj.getContentPane().add(txtCpf); txtCnpj.setVisible(false);
-		 */
 
 		JButton btnCancelar = new JButton("Cancelar");
 		btnCancelar.addActionListener(new ActionListener() {
@@ -229,14 +220,7 @@ public class TelaAdicionarProjeto {
 		btnIncluirProjeto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-				if (/*txtCnpj.getText().equals("") || txtCnpj.getText().equals("")*/
-				/*
-				 * || txtNumProj.getText().equals("") || txtQtdArq.getText().equals("") ||
-				 * txtQtdCoord.getText().equals("") || txtQtdDba.getText().equals("") ||
-				 * txtQtdGerente.getText().equals("") || txtQtdProgJr.getText().equals("") ||
-				 * txtQtdProgPl.getText().equals("") || txtQtdProgSr.getText().equals("")
-				 */
-						   txtVlrProj.getText().equals("") || dtInicio.getDate().equals(null)
+				if ( 	txtVlrProj.getText().equals("") || dtInicio.getDate().equals(null)
 						|| dtTermino.getDate().equals(null)) {
 					JOptionPane.showMessageDialog(null,
 							"Erro na validação de dados. Verifique se todos os campos estão "
@@ -254,10 +238,6 @@ public class TelaAdicionarProjeto {
 						try {
 							Connection con = DriverManager.getConnection(url);
 							Statement st = con.createStatement();
-							/*
-							 * st.execute("INSERT INTO CLIENTES (NomeCliente, CnpjCliente) VALUES " + "('" +
-							 * txtNomeCliente.getText() + "', '" + txtCnpj.getText() + "')");
-							 */
 							
 							String sql =	"INSERT INTO PROJETOS(NomeProj, CodCliente, CodStatus, HorasTotais, DataIni, DataFim, CustoProj, ObsProj) "
 											+ "VALUES('"
@@ -271,29 +251,6 @@ public class TelaAdicionarProjeto {
 											+ txtObs.getText() + "')";
 							st.execute(sql);
 											
-											/*+ Integer.parseInt(txtQtdCoord.getText()) + ", "
-											+ Integer.parseInt(txtQtdArq.getText()) + ", "
-											+ Integer.parseInt(txtQtdProgSr.getText()) + ", "
-											+ Integer.parseInt(txtQtdProgPl.getText()) + ", "
-											+ Integer.parseInt(txtQtdProgJr.getText()) + ", "
-											+ Integer.parseInt(txtQtdDba.getText()) +*/ 
-
-							
-/*							ResultSet rs = st.executeQuery("SELECT * FROM PROJETOS");
-							
-							while(rs.next()) {
-								System.out.println(rs.getInt("CodProj") + "\t" + rs.getString("NomeProj") + "\t" +
-							rs.getInt("CodCliente") + "\t" + rs.getString("CodStatus") + "\t" + rs.getInt("HorasTotais")
-							+ "\t" + dateFormat.format(rs.getDate("DataIni")) + "\t" + dateFormat.format(rs.getDate("DataFim")) 
-							+ "\t" + rs.getInt("CustoProj") + "\t" + rs.getString("ObsProj"));
-								Projeto proj = new Projeto(rs.getInt("CodProj"));
-							}
-							
-							rs = st.executeQuery("SELECT TOP 1 A.CodProj FROM PROJETOS A 	ORDER BY A.CodProj DESC");
-							
-							while(rs.next()) {
-								System.out.println(rs.getInt("CodProj"));
-							}*/
 							
 							JOptionPane.showMessageDialog(null, "Projeto adicionado com sucesso!");
 							
@@ -303,9 +260,6 @@ public class TelaAdicionarProjeto {
 							telaAdicionaCargo.idProj=(listaProjeto().size()-1);
 							telaAdicionaCargo.main(null);
 							
-							//frmAddProj.dispose();
-							// telaOperacional.getMainFrame().setVisible(true);
-							// telaOperacional.frame.setVisible(true);
 						} catch (SQLException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -362,7 +316,6 @@ public class TelaAdicionarProjeto {
 			con = DriverManager.getConnection(url);	
 			st = con.createStatement();
 			
-			//String query = "SELECT * FROM PROJETOS";
 			String query = "SELECT A.CodProj, B.NomeCliente, B.CnpjCliente, C.ObsStatus, A.HorasTotais, A.DataIni, A.DataFim, A.CustoProj, A.ObsProj" +
 			" FROM PROJETOS A, CLIENTES B, STATUS C" +
 			" WHERE (A.CodCliente=B.CodCliente) AND (A.CodStatus=C.CodStatus)";
