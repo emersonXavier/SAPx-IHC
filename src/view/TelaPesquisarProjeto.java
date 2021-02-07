@@ -45,7 +45,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ActionEvent;
 
-
+/* org.h2.jdbc.JdbcSQLException: Column "codProj" not found [42122-197] */
 
 public class TelaPesquisarProjeto {
 
@@ -108,7 +108,7 @@ public class TelaPesquisarProjeto {
 		JComboBox comboBox = new JComboBox();
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		comboBox.setBounds(190, 53, 190, 20);
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Selecione o filtro desejado...", "Numero Projeto", "Nome Cliente", "Status", "Data de in\u00EDcio", "Data de termino", "Intervalo entre datas de in\u00EDcio", "Intervalo entre datas de fim"}));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Selecione o filtro desejado.", "Numero Projeto", "Nome Cliente", "Status", "Data de in\u00EDcio", "Data de termino", "Intervalo entre datas de in\u00EDcio", "Intervalo entre datas de fim"}));
 		frmPesquisa.getContentPane().add(comboBox);
 		comboBox.addActionListener(new ActionListener() {
 			
@@ -247,7 +247,7 @@ public class TelaPesquisarProjeto {
 		btnExcluir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				if (JOptionPane.showConfirmDialog(btnExcluir, "Deseja excluir o projeto?", "Excluir Projeto", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+				if (JOptionPane.showConfirmDialog(btnExcluir, "Deseja excluir o Projeto?", "Excluir Projeto", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
 					apagaLinha((table.getValueAt(table.getSelectedRow(), 0)).toString());
 
 					JOptionPane.showMessageDialog(null, "Projeto excluído!");
@@ -351,13 +351,6 @@ public class TelaPesquisarProjeto {
 			}
 		});
 
-	
-	
-	
-	
-	
-	
-	
 		
 	}
 	
@@ -376,9 +369,10 @@ public class TelaPesquisarProjeto {
 		
 		
 		while(rs.next()){
-			proj = new Projeto(String.valueOf(rs.getInt("id_proj")), rs.getString("nome_cli"), rs.getString("cnpj_cli"), rs.getString("status"), dateFormat.format(rs.getDate("dt_ini")), dateFormat.format(rs.getDate("dt_ter")), 
-					rs.getFloat("vlr_proj"), rs.getInt("qtdGer"), rs.getInt("qtdCoord"), rs.getInt("qtdArq"), rs.getInt("qtdProgSr"), 
-					rs.getInt("qtdProgPl"), rs.getInt("qtdProgJr"), rs.getInt("qtdDba"));
+				proj = new Projeto(rs.getInt("codProj"), rs.getString("nomeProj"),
+					rs.getInt("codCliente"), rs.getInt("codStatus"), rs.getInt("horasTotais"),
+					dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
+					rs.getDouble("custoProj"), rs.getString("obsProj"));
 			arrayList.add(proj);
 		}
 	
@@ -394,16 +388,17 @@ public class TelaPesquisarProjeto {
 		
 		ArrayList<Projeto> projetoArrayList = listaProjeto();
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		Object [] linha = new Object[7];
+		Object [] coluna = new Object[7];
 		for(int i=0; i<projetoArrayList.size(); i++) {
-			linha[0]=projetoArrayList.get(i).getNumProj();
-			linha[1]=projetoArrayList.get(i).getNomeCliente();
-			linha[2]=projetoArrayList.get(i).getCnpjCliente();
-			linha[3]=projetoArrayList.get(i).getStatus();
-			linha[4]=projetoArrayList.get(i).getDataInicio();
-			linha[5]=projetoArrayList.get(i).getDataTermino();
-			linha[6]=projetoArrayList.get(i).getValProj();
-			model.addRow(linha);
+			coluna[0]=projetoArrayList.get(i).getCodProj();
+			coluna[1]=projetoArrayList.get(i).getNomeProj();
+			coluna[2]=projetoArrayList.get(i).getCodCliente();
+			coluna[3]=projetoArrayList.get(i).getCodStatus();
+			coluna[4]=projetoArrayList.get(i).getHorasTotais();
+			coluna[5]=projetoArrayList.get(i).getDataIni();
+			coluna[6]=projetoArrayList.get(i).getDataFim();
+			coluna[7]=projetoArrayList.get(i).getCustoProj();
+			model.addRow(coluna);
 		}
 		
 	}
@@ -437,6 +432,7 @@ public class TelaPesquisarProjeto {
 		}
 	}
 	
+	/* PRESTAR ATENÇÃO AQUI, VOU MUDAR PARAMETROS NO BD HARDCODED */
 	public ArrayList<Projeto> pesquisaProjeto(String arg1, String arg2, String dadoPesquisa, String dadoPesquisa2) {
 		
 		proj = null;
@@ -463,9 +459,10 @@ public class TelaPesquisarProjeto {
 			
 			
 			while(rs.next()){
-				proj = new Projeto(String.valueOf(rs.getInt("id_proj")), rs.getString("nome_cli"), rs.getString("cnpj_cli"), rs.getString("status"), dateFormat.format(rs.getDate("dt_ini")), dateFormat.format(rs.getDate("dt_ter")), 
-						rs.getFloat("vlr_proj"), rs.getInt("qtdGer"), rs.getInt("qtdCoord"), rs.getInt("qtdArq"), rs.getInt("qtdProgSr"), 
-						rs.getInt("qtdProgPl"), rs.getInt("qtdProgJr"), rs.getInt("qtdDba"));
+				proj = new Projeto(rs.getInt("codProj"), rs.getString("nomeProj"),
+						rs.getInt("codCliente"), rs.getInt("codStatus"), rs.getInt("horasTotais"),
+						dateFormat.format(rs.getDate("dataIni")), dateFormat.format(rs.getDate("dataFim")),
+						rs.getDouble("custoProj"), rs.getString("obsProj"));
 				arrayList.add(proj);
 			}
 		
@@ -483,16 +480,17 @@ public class TelaPesquisarProjeto {
 				
 		ArrayList<Projeto> projetoArrayList = pesquisaProjeto(arg1, arg2, dadoPesquisa, dadoPesquisa2);
 		DefaultTableModel model = (DefaultTableModel) table.getModel();
-		Object [] linha = new Object[7];
+		Object [] coluna = new Object[7];
 		for(int i=0; i<projetoArrayList.size(); i++) {
-			linha[0]=projetoArrayList.get(i).getNumProj();
-			linha[1]=projetoArrayList.get(i).getNomeCliente();
-			linha[2]=projetoArrayList.get(i).getCnpjCliente();
-			linha[3]=projetoArrayList.get(i).getStatus();
-			linha[4]=projetoArrayList.get(i).getDataInicio();
-			linha[5]=projetoArrayList.get(i).getDataTermino();
-			linha[6]=projetoArrayList.get(i).getValProj();
-			model.addRow(linha);
+			coluna[0]=projetoArrayList.get(i).getCodProj();
+			coluna[1]=projetoArrayList.get(i).getNomeProj();
+			coluna[2]=projetoArrayList.get(i).getCodCliente();
+			coluna[3]=projetoArrayList.get(i).getCodStatus();
+			coluna[4]=projetoArrayList.get(i).getHorasTotais();
+			coluna[5]=projetoArrayList.get(i).getDataIni();
+			coluna[6]=projetoArrayList.get(i).getDataFim();
+			coluna[7]=projetoArrayList.get(i).getCustoProj();
+			model.addRow(coluna);
 		}
 		
 	}
